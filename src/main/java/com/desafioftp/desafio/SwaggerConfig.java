@@ -12,49 +12,22 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig extends WebMvcConfigurationSupport {
+public class SwaggerConfig {
 
     @Bean
 
-    public Docket greetingApi() {
+    public Docket desafioDropBox() {
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.
-                        basePackage("com.example.swaggerready"))
-                .build()
-                .apiInfo(metaData());
-
-    }
-
-
-    private ApiInfo metaData() {
-
-        return new ApiInfoBuilder()
-                .title(
-                        "Spring Boot REST API")
-                .description(
-                        "\"Spring Boot REST API for greeting people\"")
-                .version(
-                        "1.0.0")
-                .license(
-                        "Apache License Version 2.0")
-                .licenseUrl(
-                        "https://www.apache.org/licenses/LICENSE-2.0\"")
+                        basePackage("com.desafioftp.desafio"))
                 .build();
+
     }
 
-    @Override
 
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(
-                "swagger-ui.html")
-                .addResourceLocations(
-                        "classpath:/META-INF/resources/");
 
-        registry.addResourceHandler(
-                "/webjars/**")
-                .addResourceLocations(
-                        "classpath:/META-INF/resources/webjars/");
-    }
+
+
 }
