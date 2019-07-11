@@ -1,5 +1,5 @@
 package com.desafioftp.desafio.service;
-import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.usuario.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

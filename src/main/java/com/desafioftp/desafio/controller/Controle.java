@@ -1,6 +1,6 @@
 package com.desafioftp.desafio.controller;
 
-import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.usuario.Usuario;
 import com.desafioftp.desafio.service.Servico;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,50 +23,49 @@ public class Controle {
         this.servico = servico;
     }
 
-    @GetMapping(value="/model", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value="/usuario", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o usuario.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
-            @ApiResponse(code=500, message="Não conseguiu buscar usuário", response=Usuario.class)
+            @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
     public List<Usuario> consultar(){
         return this.servico.lerUsuario();
     }
 
 
-    @PostMapping(value = "/model")
+    @PostMapping(value = "/usuario")
     @ResponseBody
-    @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o usuario.")
+    @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o usuario.")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Criou um usuário com sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
-            @ApiResponse(code=500, message="Não conseguiu buscar usuário", response=Usuario.class)
+            @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
     public Usuario criaUsuario(Usuario usuario) {
         return servico.criarUsuario(usuario);
     }
 
 
-    @PutMapping(value = "/model")
+    @PutMapping(value = "/usuario")
     @ResponseBody
-    @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o usuario.")
+    @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o usuario.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
-            @ApiResponse(code=500, message="Não conseguiu buscar usuário", response=Usuario.class)
+            @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
     public Usuario editaUsuario(Integer id, Usuario usuario) {
         return servico.editaUsuario(id, usuario);
     }
 
-    @DeleteMapping(value = "/model")
-    @ResponseBody
-    @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o usuario.")
+    @DeleteMapping(value = "/usuario")
+    @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o usuario.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Excluiu o usuario", response=Usuario.class),
-            @ApiResponse(code=500, message="Não conseguiu buscar usuário", response=Usuario.class)
+            @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
     public void deletaUsuario(Usuario usuario) {
          servico.deletaUsuario(usuario);
