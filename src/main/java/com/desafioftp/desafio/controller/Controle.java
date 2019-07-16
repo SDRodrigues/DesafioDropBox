@@ -8,11 +8,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @Api(value = "Usuario")
 public class Controle {
 
@@ -36,7 +37,7 @@ public class Controle {
     }
 
 
-    @PostMapping(value = "/usuario")
+    @PostMapping(value = "/usuario", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o usuario.")
     @ApiResponses(value= {
@@ -49,7 +50,7 @@ public class Controle {
     }
 
 
-    @PutMapping(value = "/usuario")
+    @PutMapping(value = "/usuario", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o usuario.")
     @ApiResponses(value= {
@@ -61,7 +62,7 @@ public class Controle {
         return servico.editaUsuario(id, usuario);
     }
 
-    @DeleteMapping(value = "/usuario")
+    @DeleteMapping(value = "/usuario", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o usuario.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Excluiu o usuario", response=Usuario.class),
