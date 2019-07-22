@@ -13,7 +13,7 @@ import java.io.IOException;
 public class Conexao {
     FTPClient ftp = new FTPClient();
 
-    public FTPClient conexao(String usuario, String senha) {
+    public FTPClient conecta(String usuario, String senha) {
         try {
             ftp.connect("172.17.0.1", 21);
             ftp.login(usuario, senha);

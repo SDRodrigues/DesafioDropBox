@@ -15,12 +15,12 @@ import java.util.List;
 
 @Controller
 @Api(value = "Usuario")
-public class Controle {
+public class ControleDB {
 
     private Servico servico;
 
     @Autowired
-    public Controle(Servico servico) {
+    public ControleDB(Servico servico) {
         this.servico = servico;
     }
 
