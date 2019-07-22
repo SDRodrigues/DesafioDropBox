@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -15,4 +17,5 @@ public class Usuario {
     private String nome;
     private Integer idade;
     private String profissao;
+    private List<Long> usuarios;
 }

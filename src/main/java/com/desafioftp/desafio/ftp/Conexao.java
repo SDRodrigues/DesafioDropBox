@@ -3,45 +3,24 @@ package com.desafioftp.desafio.ftp;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-
+@Service
 @AllArgsConstructor
 @NoArgsConstructor
 public class Conexao {
+    FTPClient ftp = new FTPClient();
 
-    private String host = "172.17.0.1";
-    private String user = "rodrigues";
-    private String senha = "rodrigues";
-    private int port = 21;
-
-    private FTPClient ftp;
-
-    void conecta() {
-        ftp = new FTPClient();
-
+    public FTPClient conexao(String usuario, String senha) {
         try {
-            ftp.connect(host, port);
+            ftp.connect("172.17.0.1", 21);
+            ftp.login(usuario, senha);
+        } catch (IOException erro) {
+            erro.getMessage();
         }
-        catch (IOException erro) {
-            System.out.println(erro);
-        }
-        int reply = ftp.getReplyCode();
-        if (!FTPReply.isPositiveCompletion(reply)) {
-            try {
-                ftp.disconnect();
-            }
-            catch (IOException erro) {
-                System.out.println(erro + "Nao conseguiu se conectar ao servidor FTP");
-            }
-        } try {
-            ftp.login(user, senha);
-        }
-        catch (IOException erro) {
-            System.out.println(erro);
-        }
+        return ftp;
     }
 
     void desconecta() {
@@ -49,7 +28,7 @@ public class Conexao {
             ftp.disconnect();
         }
         catch (IOException erro) {
-            System.out.println(erro);
+            erro.getMessage();
         }
     }
 }
