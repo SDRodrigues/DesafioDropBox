@@ -9,6 +9,7 @@ public class UsuarioUpload {
     private String nome;
     private Integer idade;
     private String profissao;
+    private String senha;
     private List<Long> arquivos;
 
     public UsuarioUpload(Usuario usuario) {
@@ -16,10 +17,11 @@ public class UsuarioUpload {
         this.setNome(usuario.getNome());
         this.setIdade(usuario.getIdade());
         this.setProfissao(usuario.getProfissao());
+        this.setSenha(usuario.getSenha());
         this.setArquivos(usuario.getArquivos());
     }
 
     public Usuario upload(){
-        return new Usuario(id, nome, idade, profissao, arquivos);
+        return new Usuario(id, nome, idade, profissao, senha, arquivos);
     }
 }
