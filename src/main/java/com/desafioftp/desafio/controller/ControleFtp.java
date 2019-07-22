@@ -9,12 +9,13 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@Api(value = "Arquivos")
-
+@RequestMapping("v1/Arquivos")
 public class ControleFtp {
 
      private ServicoArquivo servicoArquivo;
@@ -24,17 +25,16 @@ public class ControleFtp {
         this.servicoArquivo = servicoArquivo;
     }
 
-    @GetMapping(value="/arquivos", produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    @ApiOperation(value="Busca arquivos", response= UsuarioUpload.class, notes="Essa operação busca os arquivos do usuário.")
-    @ApiResponses(value= {
-            @ApiResponse(code=200, message="Retorna os arquivos do usuário com uma mensagem de sucesso", response=UsuarioUpload.class),
-            @ApiResponse(code=404, message = "Não encontrou arquivos", response = UsuarioUpload.class),
-            @ApiResponse(code=500, message="Erro interno", response=UsuarioUpload.class)
-    })
-    public UsuarioUpload listar(){
-        return this.servicoArquivo.listarArquivos();
-    }
-
-
+//    @PostMapping(value = "/usuariosUpload", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    @ResponseBody
+//    @ApiOperation(value="Envia arquivos", response= UsuarioUpload.class, notes="Essa operação envia os arquivos" +
+//            " do usuário.")
+//    @ApiResponses(value= {
+//            @ApiResponse(code=201, message="Enviou arquivos com sucesso", response=UsuarioUpload.class),
+//            @ApiResponse(code=404, message = "Não encontrou arquivos", response = UsuarioUpload.class),
+//            @ApiResponse(code=500, message="Erro interno", response=UsuarioUpload.class)
+//    })
+//    public UsuarioUpload enviarArquivos() {
+//        return servicoArquivo.enviarArquivos();
+//    }
 }

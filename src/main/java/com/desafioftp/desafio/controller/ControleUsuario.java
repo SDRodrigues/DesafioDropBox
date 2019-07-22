@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@Api(value = "Usuario")
+@RestController
+@RequestMapping("v1/Usuario")
 public class ControleUsuario {
 
     private Servico servico;
