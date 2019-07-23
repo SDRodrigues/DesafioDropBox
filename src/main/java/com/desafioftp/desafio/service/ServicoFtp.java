@@ -1,7 +1,7 @@
 package com.desafioftp.desafio.service;
 
 import com.desafioftp.desafio.server.ConexaoFtp;
-import com.desafioftp.desafio.usuario.UsuarioDto;
+import com.desafioftp.desafio.usuario.UsuarioUpload;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,19 @@ public class ServicoFtp {
         this.ftpClient = ftpClient;
     }
 
-    public boolean listarArquivos(UsuarioDto usuario) {
+    public boolean enviarArquivos(MultipartFile multipartFile, UsuarioUpload usuario) {
+        try {
+            ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
+            ftpClient.storeFile(multipartFile.getOriginalFilename(), multipartFile.getInputStream());
+        }
+        catch (IOException erro) {
+            erro.getMessage();
+        }
+        return false;
+
+    }
+
+    public boolean listarArquivos(UsuarioUpload usuario) {
          ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
         try {
             ftpClient.listFiles();
@@ -36,19 +48,7 @@ public class ServicoFtp {
         return false;
     }
 
-    public boolean enviarArquivos(MultipartFile multipartFile, UsuarioDto usuario) {
-        try {
-             ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
-             ftpClient.storeFile(multipartFile.getOriginalFilename(), multipartFile.getInputStream());
-        }
-        catch (IOException erro) {
-            erro.getMessage();
-        }
-        return false;
-
-    }
-
-    public void excluirArquivos (String arquivo, UsuarioDto usuario) {
+    public void excluirArquivos (String arquivo, UsuarioUpload usuario) {
          ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
             try {
                 ftpClient.deleteFile(arquivo);

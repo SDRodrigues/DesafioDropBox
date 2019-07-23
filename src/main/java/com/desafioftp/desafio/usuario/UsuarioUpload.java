@@ -1,10 +1,14 @@
 package com.desafioftp.desafio.usuario;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class UsuarioDto {
+public class UsuarioUpload {
     private Integer id;
     private String nome;
     private Integer idade;
@@ -12,7 +16,7 @@ public class UsuarioDto {
     private String senha;
     private List<Long> arquivos;
 
-    public UsuarioDto(Usuario usuario) {
+    public UsuarioUpload(@NotNull Usuario usuario) {
         this.setId(usuario.getId());
         this.setNome(usuario.getNome());
         this.setIdade(usuario.getIdade());

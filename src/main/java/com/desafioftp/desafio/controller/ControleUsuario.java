@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("v1/Usuario")
+@RequestMapping("v1/usuario")
 public class ControleUsuario {
 
     private Servico servico;
@@ -23,7 +23,7 @@ public class ControleUsuario {
         this.servico = servico;
     }
 
-    @GetMapping(value="/usuario", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o usuario.")
     @ApiResponses(value= {
