@@ -1,10 +1,9 @@
-package com.desafioftp.desafio.usuario;
+package com.desafioftp.desafio.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-
 import java.util.List;
 
 

@@ -1,7 +1,7 @@
 package com.desafioftp.desafio.service;
 
 import com.desafioftp.desafio.server.ConexaoFtp;
-import com.desafioftp.desafio.usuario.UsuarioUpload;
+import com.desafioftp.desafio.model.UsuarioUpload;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

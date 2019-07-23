@@ -1,6 +1,6 @@
 package com.desafioftp.desafio.controller;
 
-import com.desafioftp.desafio.usuario.Usuario;
+import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.service.Servico;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -25,7 +25,7 @@ public class ControleUsuario {
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o usuario.")
+    @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o model.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
@@ -38,7 +38,7 @@ public class ControleUsuario {
 
     @PostMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o usuario.")
+    @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o model.")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Criou um usuário com sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
@@ -51,7 +51,7 @@ public class ControleUsuario {
 
     @PutMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o usuario.")
+    @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o model.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
@@ -62,9 +62,9 @@ public class ControleUsuario {
     }
 
     @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o usuario.")
+    @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o model.")
     @ApiResponses(value= {
-            @ApiResponse(code=200, message="Excluiu o usuario", response=Usuario.class),
+            @ApiResponse(code=200, message="Excluiu o model", response=Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
     public void deletaUsuario(@PathVariable Integer id) {servico.deletaUsuarioId(id); }

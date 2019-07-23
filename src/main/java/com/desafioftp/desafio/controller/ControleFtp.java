@@ -1,7 +1,7 @@
 package com.desafioftp.desafio.controller;
 
 import com.desafioftp.desafio.service.ServicoFtp;
-import com.desafioftp.desafio.usuario.UsuarioUpload;
+import com.desafioftp.desafio.model.UsuarioUpload;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
