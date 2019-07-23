@@ -20,8 +20,8 @@ public class ConexaoFtp {
 
     public FTPClient conecta(String usuario, String senha) {
         try {
-            ftp.connect(host, port);
-            ftp.login(usuario, senha);
+            this.ftp.connect(this.host, this.port);
+            this.ftp.login(this.usuario, this.senha);
         } catch (IOException erro) {
             erro.getMessage();
         }
@@ -30,7 +30,8 @@ public class ConexaoFtp {
 
     void desconecta() {
         try {
-            ftp.disconnect();
+            this.ftp.logout();
+            this.ftp.disconnect();
         }
         catch (IOException erro) {
             erro.getMessage();

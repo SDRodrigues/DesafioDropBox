@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("v1/usuario")
@@ -33,6 +34,18 @@ public class ControleUsuario {
     })
     public List<Usuario> consultar(){
         return this.servico.lerUsuario();
+    }
+
+    @GetMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca o model.")
+    @ApiResponses(value= {
+            @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
+            @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
+            @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
+    })
+    public Optional<Usuario> consultarId(Integer id){
+        return this.servico.lerUsuarioId(id);
     }
 
 

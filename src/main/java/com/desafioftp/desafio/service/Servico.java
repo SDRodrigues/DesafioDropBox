@@ -17,28 +17,24 @@ public class Servico {
     }
 
     public Usuario criarUsuario(Usuario usuario) {
-        return repositorio.save(usuario);
+        return this.repositorio.save(usuario);
     }
 
     public List<Usuario> lerUsuario() {
-        return repositorio.findAll();
-    }
-
-    public Optional<Usuario> lerUsuarioId(Integer id) {
-        return repositorio.findById(id);
-    }
-
-    public void deletaUsuario(Usuario usuario) {
-        repositorio.delete(usuario);
+        return this.repositorio.findAll();
     }
 
     public void deletaUsuarioId(Integer id) {
-        repositorio.deleteById(id);
+        this.repositorio.deleteById(id);
     }
 
     public Usuario editaUsuario(Integer id, Usuario usuario) {
         usuario.setId(id);
-        return repositorio.save(usuario);
+    return this.repositorio.save(usuario);
+    }
+
+    public Optional<Usuario> lerUsuarioId(Integer id) {
+        return this.repositorio.findById(id);
     }
 
 

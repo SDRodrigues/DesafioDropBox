@@ -1,5 +1,6 @@
 package com.desafioftp.desafio.service;
 
+import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.server.ConexaoFtp;
 import com.desafioftp.desafio.model.UsuarioUpload;
 import org.apache.commons.net.ftp.FTPClient;
@@ -24,7 +25,7 @@ public class ServicoFtp {
         this.ftpClient = ftpClient;
     }
 
-    public boolean enviarArquivos(MultipartFile multipartFile, UsuarioUpload usuario) {
+    public void enviarArquivos(MultipartFile multipartFile, Usuario usuario) {
         try {
             ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
             ftpClient.storeFile(multipartFile.getOriginalFilename(), multipartFile.getInputStream());
@@ -32,24 +33,25 @@ public class ServicoFtp {
         catch (IOException erro) {
             erro.getMessage();
         }
-        return false;
+
 
     }
 
-    public boolean listarArquivos(UsuarioUpload usuario) {
-         ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
+    public boolean listarArquivos() {
+        UsuarioUpload usuario = new UsuarioUpload();
         try {
+            ftpClient = conexaoFtp.conecta(usuario.upload().getNome(), usuario.upload().getSenha());
             ftpClient.listFiles();
         }
         catch (IOException erro) {
             erro.getMessage();
 
         }
-        return false;
+        return true;
     }
 
     public void excluirArquivos (String arquivo, UsuarioUpload usuario) {
-         ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
+         ftpClient = conexaoFtp.conecta(usuario.upload().getNome(), usuario.upload().getSenha());
             try {
                 ftpClient.deleteFile(arquivo);
             }

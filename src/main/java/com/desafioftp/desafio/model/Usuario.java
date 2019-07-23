@@ -17,5 +17,5 @@ public class Usuario {
     private Integer idade;
     private String profissao;
     private String senha;
-    private List<Long> arquivos;
+    private List<Arquivos> arquivos;
 }
