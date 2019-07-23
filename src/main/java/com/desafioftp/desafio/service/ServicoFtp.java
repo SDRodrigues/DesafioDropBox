@@ -1,7 +1,7 @@
 package com.desafioftp.desafio.service;
 
 import com.desafioftp.desafio.server.ConexaoFtp;
-import com.desafioftp.desafio.usuario.UsuarioUpload;
+import com.desafioftp.desafio.usuario.UsuarioDto;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,38 +9,47 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-public class ServicoArquivo {
+public class ServicoFtp {
 
     private ConexaoFtp conexaoFtp;
+    private FTPClient ftpClient;
+
 
     @Autowired
-    public ServicoArquivo(ConexaoFtp conexaoFtp) {
+    public ServicoFtp(ConexaoFtp conexaoFtp) {
         this.conexaoFtp = conexaoFtp;
     }
 
-    public void listarArquivos(UsuarioUpload usuario) {
-        FTPClient ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
+    public ServicoFtp(FTPClient ftpClient) {
+        this.ftpClient = ftpClient;
+    }
+
+    public boolean listarArquivos(UsuarioDto usuario) {
+         ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
         try {
             ftpClient.listFiles();
         }
         catch (IOException erro) {
             erro.getMessage();
+
         }
+        return false;
     }
 
-    public void enviarArquivos(MultipartFile multipartFile, UsuarioUpload usuario) {
+    public boolean enviarArquivos(MultipartFile multipartFile, UsuarioDto usuario) {
         try {
-            FTPClient ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
+             ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
              ftpClient.storeFile(multipartFile.getOriginalFilename(), multipartFile.getInputStream());
         }
         catch (IOException erro) {
             erro.getMessage();
         }
+        return false;
 
     }
 
-    public void excluirArquivos (String arquivo, UsuarioUpload usuario) {
-        FTPClient ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
+    public void excluirArquivos (String arquivo, UsuarioDto usuario) {
+         ftpClient = conexaoFtp.conecta(usuario.getNome(), usuario.getSenha());
             try {
                 ftpClient.deleteFile(arquivo);
             }
@@ -48,7 +57,5 @@ public class ServicoArquivo {
                 erro.getMessage();
             }
         }
-
-
 
     }
