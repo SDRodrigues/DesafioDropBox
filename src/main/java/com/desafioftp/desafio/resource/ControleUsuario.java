@@ -1,20 +1,20 @@
-package com.desafioftp.desafio.controller;
+package com.desafioftp.desafio.resource;
 
 import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.service.ServicoUsuario;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-@RequestMapping("v1/usuario")
+@RestController
+@RequestMapping("v1/usuarios")
 public class ControleUsuario {
 
     private ServicoUsuario servicoUsuario;
@@ -44,8 +44,7 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Optional<Usuario> consultarId(Integer id){
-        return this.servicoUsuario.lerUsuarioId(id);
+    public Optional<Usuario> consultarId(@PathVariable Integer id){ return this.servicoUsuario.lerUsuarioId(id);
     }
 
 
@@ -57,7 +56,7 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Usuario criaUsuario(Usuario usuario) {
+    public Usuario criaUsuario(@RequestBody Usuario usuario) {
         return servicoUsuario.criarUsuario(usuario);
     }
 

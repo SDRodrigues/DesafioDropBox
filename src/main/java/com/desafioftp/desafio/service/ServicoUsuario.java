@@ -1,4 +1,5 @@
 package com.desafioftp.desafio.service;
+import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +18,24 @@ public class ServicoUsuario {
     }
 
     public Usuario criarUsuario(Usuario usuario) {
-        return this.repositorio.save(usuario);
+        return this.repositorio.insert(usuario);
     }
 
     public List<Usuario> lerUsuario() {
         return this.repositorio.findAll();
     }
 
-    public void deletaUsuarioId(Integer id) {
-        this.repositorio.deleteById(id);
+    public Optional<Usuario> lerUsuarioId(Integer id) {
+       return repositorio.findById(id);
     }
 
     public Usuario editaUsuario(Integer id, Usuario usuario) {
         usuario.setId(id);
-    return this.repositorio.save(usuario);
+        return this.repositorio.save(usuario);
     }
 
-    public Optional<Usuario> lerUsuarioId(Integer id) {
-        return this.repositorio.findById(id);
+    public void deletaUsuarioId(Integer id) {
+        this.repositorio.deleteById(id);
     }
-
 
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,5 +19,5 @@ public class Usuario {
     private Integer idade;
     private String profissao;
     private String senha;
-    private List<Arquivos> arquivos;
+    private List<Arquivos> arquivos = new ArrayList<>();
 }
