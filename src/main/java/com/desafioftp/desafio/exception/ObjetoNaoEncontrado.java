@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor
-public class Excecao extends RuntimeException {
-    public Excecao(String message) {
+public class ObjetoNaoEncontrado extends RuntimeException {
+    public ObjetoNaoEncontrado(String message) {
         super(message);
     }
 

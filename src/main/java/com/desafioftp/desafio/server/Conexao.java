@@ -9,7 +9,7 @@ import java.io.IOException;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConexaoFtp {
+public class Conexao {
 
     private int port = 21;
     private String host = "172.17.0.1";
@@ -21,7 +21,8 @@ public class ConexaoFtp {
     public FTPClient conecta(String usuario, String senha) {
         try {
             this.ftp.connect(this.host, this.port);
-            this.ftp.login(this.usuario, this.senha);
+            this.ftp.login(usuario, senha);
+            this.ftp.enterLocalPassiveMode();
         } catch (IOException erro) {
             erro.getMessage();
         }

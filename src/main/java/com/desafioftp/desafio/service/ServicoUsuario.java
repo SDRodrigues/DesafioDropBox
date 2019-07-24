@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class Servico {
+public class ServicoUsuario {
 
     private  Repositorio repositorio;
 
     @Autowired
-    public Servico(Repositorio repositorio) {
+    public ServicoUsuario(Repositorio repositorio) {
         this.repositorio = repositorio;
     }
 
