@@ -28,4 +28,5 @@ public class UsuarioDto {
                 usuarioDto.getSenha(),
                 usuarioDto.getArquivos());
     }
+
 }

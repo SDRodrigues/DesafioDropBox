@@ -29,13 +29,13 @@ public class ServicoUsuario {
        return repositorio.findById(id);
     }
 
+    public void deletaUsuarioId(Integer id) {
+        this.repositorio.deleteById(id);
+    }
+
     public Usuario editaUsuario(Integer id, Usuario usuario) {
         usuario.setId(id);
         return this.repositorio.save(usuario);
-    }
-
-    public void deletaUsuarioId(Integer id) {
-        this.repositorio.deleteById(id);
     }
 
 }

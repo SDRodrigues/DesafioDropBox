@@ -17,13 +17,15 @@ public class Conexao {
     private String usuario = "rodrigues";
     private String senha = "rodrigues";
 
-    FTPClient ftp = new FTPClient();
 
-    public boolean conecta() {
+    public boolean conecta(String usuario, String senha) {
+        FTPClient ftp = new FTPClient();
         try {
             ftp.connect(this.servidor, porta);
             if (FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-                ftp.login(this.usuario, this.senha);
+                senha = this.senha;
+                usuario = this.usuario;
+                ftp.login(usuario, senha);
             } else {
                 disconecta();
                 System.out.println("Conexão recusada");
@@ -38,11 +40,13 @@ public class Conexao {
     }
 
     public void disconecta() {
+        FTPClient ftp = new FTPClient();
+
         try {
-            this.ftp.logout();
-            this.ftp.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
+            ftp.logout();
+            ftp.disconnect();
+        } catch (IOException erro) {
+            erro.getMessage();
         }
     }
 

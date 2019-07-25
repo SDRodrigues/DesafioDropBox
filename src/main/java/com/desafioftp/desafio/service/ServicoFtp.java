@@ -2,7 +2,6 @@ package com.desafioftp.desafio.service;
 
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.server.Conexao;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -10,23 +9,79 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
+import java.nio.file.Path;
+import java.util.Optional;
 
 @Service
 @NoArgsConstructor
-@AllArgsConstructor
 public class ServicoFtp {
-        private FTPClient ftpClient;
         private Conexao conexao;
+        private ServicoUsuario servicoUsuario;
 
         @Autowired
-    public ServicoFtp(Conexao conexao) {
+    public ServicoFtp(Conexao conexao, ServicoUsuario servicoUsuario) {
         this.conexao = conexao;
+        this.servicoUsuario = servicoUsuario;
     }
 
-    public String[] nomeDiretorio(String diretorio) {
-            String[] nomeDir = null;
+    public boolean enviaArquivo(MultipartFile arquivo, Integer id) {
+        FileInputStream arqEnviar;
+        FTPClient ftpClient = new FTPClient();
+        Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
+        try {
+            File confFile = new File(arquivo.getOriginalFilename());
+            confFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(confFile);
+            fos.write(arquivo.getBytes());
+            fos.close();
+            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+            ftpClient.enterLocalPassiveMode();
+            arqEnviar = new FileInputStream(String.valueOf(arquivo));
+            if (ftpClient.storeFile(String.valueOf(arquivo), arqEnviar)) {
+                return true;
+            }
+            arqEnviar.close();
+        }
+            catch(IOException erro) {
+            erro.getMessage();
+        }
+            conexao.disconecta();
+        return false;
+    }
+
+    public FTPFile[] buscaArquivos(String diretorio, Integer id) {
+        FTPFile[] arquivosConfig = null;
+        FTPClient ftpClient = new FTPClient();
+        Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
+        try {
+            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.changeWorkingDirectory(diretorio);
+            arquivosConfig = ftpClient.listFiles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            conexao.disconecta();
+        }
+        return arquivosConfig;
+    }
+
+    public void excluirArquivos(String arquivo, Usuario usuario) {
+        FTPClient ftpClient = new FTPClient();
+        try {
+            conexao.conecta(usuario.getNome(), usuario.getSenha());
+            ftpClient.deleteFile(arquivo);
+        }
+        catch (IOException erro) {
+            erro.getMessage();
+        }
+    }
+
+    public String[] nomeDiretorio(String diretorio, Usuario usuario) {
+        FTPClient ftpClient = new FTPClient();
+        String[] nomeDir = null;
             try {
-                conexao.conecta();
+                conexao.conecta(usuario.getNome(), usuario.getSenha());
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.changeWorkingDirectory(diretorio);
                 nomeDir = ftpClient.listNames();
@@ -37,60 +92,5 @@ public class ServicoFtp {
             }
             return nomeDir;
         }
-
-        public FTPFile[] buscaArquivos(String diretorio) {
-            FTPFile[] arquivosConfig = null;
-            try {
-                conexao.conecta();
-                ftpClient.enterLocalPassiveMode();
-                ftpClient.changeWorkingDirectory(diretorio);
-                arquivosConfig = ftpClient.listFiles();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                conexao.disconecta();
-            }
-            return arquivosConfig;
-        }
-
-        public boolean enviaArquivo(MultipartFile arquivo, Usuario usuario) {
-            try {
-                conexao.conecta();
-                ftpClient.enterLocalPassiveMode();
-                if (ftpClient.storeFile(arquivo.getOriginalFilename(), arquivo.getInputStream())) {
-                    return true;
-                }
-            }catch(IOException e) {
-                e.printStackTrace();
-            } finally {
-                conexao.disconecta();
-            }
-            return false;
-        }
-        public void buscaAquivo(String arquivo) {
-            try {
-                conexao.conecta();
-                ftpClient.enterLocalPassiveMode();
-                ftpClient.setFileType( FTPClient.BINARY_FILE_TYPE );
-                OutputStream os = new FileOutputStream(arquivo);
-                ftpClient.retrieveFile(arquivo, os );
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                conexao.disconecta();
-            }
-        }
-
-        public void excluirArquivos(String arquivo) {
-            try {
-                conexao.conecta();
-                ftpClient.deleteFile(arquivo);
-            }
-            catch (IOException erro) {
-                erro.getMessage();
-            }
-        }
-
-
 
     }
