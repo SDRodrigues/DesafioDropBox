@@ -1,14 +1,28 @@
 package com.desafioftp.desafio.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
+import org.apache.commons.net.ftp.FTPFile;
+import java.io.File;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Arquivos {
-    private Integer id;
-    private List<String> listaDeArquivos;
+    private String donoArquivo;
+    private String nomeArquivo;
+
+
+    public Arquivos(FTPFile ftpFile) {
+    }
+
+    public Arquivos(File arquivo, String dono) {
+        nomeArquivo = arquivo.getName();
+        this.donoArquivo = dono;
+    }
+
+    public static Arquivos recebeArquivo(File file) {
+        Arquivos arquivos = new Arquivos();
+        arquivos.nomeArquivo = file.getName();
+        return arquivos;
+    }
 }

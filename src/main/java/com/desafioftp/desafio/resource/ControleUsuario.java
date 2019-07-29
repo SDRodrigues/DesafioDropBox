@@ -3,6 +3,7 @@ package com.desafioftp.desafio.resource;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.service.ServicoUsuario;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -14,22 +15,17 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("v1/usuarios")
+@Api(value = "usuarios")
 public class ControleUsuario {
 
     private ServicoUsuario servicoUsuario;
-    private UsuarioDto usuarioDto;
 
     @Autowired
     public ControleUsuario(ServicoUsuario servicoUsuario) {
         this.servicoUsuario = servicoUsuario;
     }
 
-    public ControleUsuario(UsuarioDto usuarioDto) {
-        this.usuarioDto = usuarioDto;
-    }
-
     @GetMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca os usuários.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
@@ -41,7 +37,6 @@ public class ControleUsuario {
     }
 
     @GetMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca um usuário especifico.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
@@ -53,7 +48,6 @@ public class ControleUsuario {
 
 
     @PostMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
     @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o model.")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Criou um usuário com sucesso", response=Usuario.class),
@@ -66,7 +60,6 @@ public class ControleUsuario {
 
     @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o model.")
-    @ResponseBody
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Excluiu o model", response=Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
@@ -76,7 +69,6 @@ public class ControleUsuario {
     }
 
     @PutMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
     @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o model.")
     @ApiResponses(value= {
             @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),

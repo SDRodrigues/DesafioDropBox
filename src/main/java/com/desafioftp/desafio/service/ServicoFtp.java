@@ -1,5 +1,6 @@
 package com.desafioftp.desafio.service;
 
+import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.server.Conexao;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -48,28 +50,29 @@ public class ServicoFtp {
         return false;
     }
 
-    public FTPFile[] buscaArquivos(String diretorio, Integer id) {
-        FTPFile[] arquivosConfig = null;
+    public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
         FTPClient ftpClient = new FTPClient();
-        Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
         try {
             conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
             ftpClient.enterLocalPassiveMode();
-            ftpClient.changeWorkingDirectory(diretorio);
-            arquivosConfig = ftpClient.listFiles();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            conexao.disconecta();
+            FTPFile[] arquivosBuscados = ftpClient.listFiles();
+            ArrayList<Arquivos> listaArquivos = new ArrayList<>();
+            for (FTPFile ftpFile : arquivosBuscados) {
+                Arquivos arquivos = new Arquivos(ftpFile);
+                listaArquivos.add(arquivos);
+            }
+             return listaArquivos;
+        } catch (IOException erro) {
+            erro.getMessage();
+            return null;
         }
-        return arquivosConfig;
     }
 
-    public void excluirArquivos(String arquivo, Usuario usuario) {
+    public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
         FTPClient ftpClient = new FTPClient();
         try {
-            conexao.conecta(usuario.getNome(), usuario.getSenha());
-            ftpClient.deleteFile(arquivo);
+            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+            ftpClient.deleteFile(String.valueOf(nomeArquivo));
         }
         catch (IOException erro) {
             erro.getMessage();
@@ -84,8 +87,8 @@ public class ServicoFtp {
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.changeWorkingDirectory(diretorio);
                 nomeDir = ftpClient.listNames();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException erro) {
+                erro.getMessage();
             }finally {
             conexao.disconecta();
             }

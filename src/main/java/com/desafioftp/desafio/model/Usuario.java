@@ -19,5 +19,5 @@ public class Usuario {
     private Integer idade;
     private String profissao;
     private String senha;
-    private List<Arquivos> arquivos = new ArrayList<>();
+    private List<Arquivos> arquivos;
 }

@@ -1,11 +1,15 @@
 package com.desafioftp.desafio.service;
 import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
+import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 @Service
 public class ServicoUsuario {
@@ -26,7 +30,11 @@ public class ServicoUsuario {
     }
 
     public Optional<Usuario> lerUsuarioId(Integer id) {
-       return repositorio.findById(id);
+        Optional<Usuario> user = repositorio.findById(id);
+        if (user == null) {
+            throw new ObjetoNaoEncontrado("Usuário não encontrado");
+        }
+        return user;
     }
 
     public void deletaUsuarioId(Integer id) {
@@ -37,5 +45,6 @@ public class ServicoUsuario {
         usuario.setId(id);
         return this.repositorio.save(usuario);
     }
+
 
 }
