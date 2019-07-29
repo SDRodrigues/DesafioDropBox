@@ -58,10 +58,9 @@ public class ControleFtp {
 
     @DeleteMapping(value = "/{id}")
     @ApiOperation(value = "Delete user file")
-    public ResponseEntity deleteFile(@PathVariable Integer id, @RequestBody String nomeArquivo) {
+    public void deleteFile(@PathVariable Integer id, @RequestBody String nomeArquivo) {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
         servicoFtp.excluirArquivos(usuario, nomeArquivo);
-        return new ResponseEntity(null, HttpStatus.OK);
     }
 
 }
