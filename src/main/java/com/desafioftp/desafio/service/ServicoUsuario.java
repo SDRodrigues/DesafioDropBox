@@ -1,15 +1,11 @@
 package com.desafioftp.desafio.service;
 import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
-import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Vector;
 
 @Service
 public class ServicoUsuario {
@@ -37,7 +33,9 @@ public class ServicoUsuario {
         return user;
     }
 
+
     public void deletaUsuarioId(Integer id) {
+        this.lerUsuarioId(id);
         this.repositorio.deleteById(id);
     }
 

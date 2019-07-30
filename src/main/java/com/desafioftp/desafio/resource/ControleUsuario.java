@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -60,12 +61,9 @@ public class ControleUsuario {
 
     @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o model.")
-    @ApiResponses(value= {
-            @ApiResponse(code=200, message="Excluiu o model", response=Usuario.class),
-            @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
-    })
-    public void deletaUsuario(@PathVariable Integer id) {
+    public ResponseEntity<Void> deletaUsuario(@PathVariable Integer id) {
         servicoUsuario.deletaUsuarioId(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)

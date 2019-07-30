@@ -8,16 +8,14 @@ import java.io.File;
 @Data
 @NoArgsConstructor
 public class Arquivos {
-    private String donoArquivo;
     private String nomeArquivo;
 
 
     public Arquivos(FTPFile ftpFile) {
     }
 
-    public Arquivos(File arquivo, String dono) {
+    public Arquivos(File arquivo) {
         nomeArquivo = arquivo.getName();
-        this.donoArquivo = dono;
     }
 
     public static Arquivos recebeArquivo(File file) {

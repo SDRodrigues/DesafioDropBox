@@ -14,18 +14,22 @@ public class Conexao {
 
     private int porta = 21;
     private String servidor = "172.17.0.1";
+    private String server = "127.0.0.1";
     private String usuario = "rodrigues";
     private String senha = "rodrigues";
+    private FTPClient ftp = new FTPClient();
+
 
 
     public boolean conecta(String usuario, String senha) {
-        FTPClient ftp = new FTPClient();
         try {
             ftp.connect(this.servidor, porta);
             if (FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
                 senha = this.senha;
                 usuario = this.usuario;
                 ftp.login(usuario, senha);
+                ftp.enterLocalPassiveMode();
+                disconecta();
             } else {
                 disconecta();
                 System.out.println("Conexão recusada");
@@ -40,8 +44,6 @@ public class Conexao {
     }
 
     public void disconecta() {
-        FTPClient ftp = new FTPClient();
-
         try {
             ftp.logout();
             ftp.disconnect();

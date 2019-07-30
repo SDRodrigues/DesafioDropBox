@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
@@ -18,16 +19,21 @@ import java.util.Optional;
 public class ServicoFtp {
         private Conexao conexao;
         private ServicoUsuario servicoUsuario;
+        private FTPClient ftpClient = new FTPClient();
 
-        @Autowired
+
+    @Autowired
     public ServicoFtp(Conexao conexao, ServicoUsuario servicoUsuario) {
         this.conexao = conexao;
         this.servicoUsuario = servicoUsuario;
     }
 
+    public ServicoFtp(FTPClient ftpClient) {
+        this.ftpClient = ftpClient;
+    }
+
     public boolean enviaArquivo(MultipartFile arquivo, Integer id) {
         FileInputStream arqEnviar;
-        FTPClient ftpClient = new FTPClient();
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
         try {
             File confFile = new File(arquivo.getOriginalFilename());
@@ -36,7 +42,6 @@ public class ServicoFtp {
             fos.write(arquivo.getBytes());
             fos.close();
             conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            ftpClient.enterLocalPassiveMode();
             arqEnviar = new FileInputStream(String.valueOf(arquivo));
             if (ftpClient.storeFile(String.valueOf(arquivo), arqEnviar)) {
                 return true;
@@ -51,16 +56,15 @@ public class ServicoFtp {
     }
 
     public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
-        FTPClient ftpClient = new FTPClient();
         try {
             conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            ftpClient.enterLocalPassiveMode();
-            FTPFile[] arquivosBuscados = ftpClient.listFiles();
+            FTPFile[] files = ftpClient.listFiles();
             ArrayList<Arquivos> listaArquivos = new ArrayList<>();
-            for (FTPFile ftpFile : arquivosBuscados) {
-                Arquivos arquivos = new Arquivos(ftpFile);
+            for (FTPFile file : files) {
+                Arquivos arquivos = new Arquivos(file);
                 listaArquivos.add(arquivos);
             }
+
              return listaArquivos;
         } catch (IOException erro) {
             erro.getMessage();
@@ -68,23 +72,36 @@ public class ServicoFtp {
         }
     }
 
-    public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
-        FTPClient ftpClient = new FTPClient();
+    public FTPFile[] buscaArquivosDoUsuario(Optional<Usuario> usuario) {
         try {
             conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            ftpClient.deleteFile(String.valueOf(nomeArquivo));
+            ftpClient.enterLocalPassiveMode();
+            return ftpClient.listFiles();
+        } catch (IOException erro) {
+            erro.getMessage();
+            return null;
+        }
+    }
+
+    public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
+        try {
+            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+            ftpClient.deleteFile(nomeArquivo);
         }
         catch (IOException erro) {
             erro.getMessage();
         }
     }
 
-    public String[] nomeDiretorio(String diretorio, Usuario usuario) {
-        FTPClient ftpClient = new FTPClient();
+    public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer quantidade) {
+        conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+        return null;
+    }
+
+    public String[] mudaDiretorio(String diretorio, Usuario usuario) {
         String[] nomeDir = null;
             try {
                 conexao.conecta(usuario.getNome(), usuario.getSenha());
-                ftpClient.enterLocalPassiveMode();
                 ftpClient.changeWorkingDirectory(diretorio);
                 nomeDir = ftpClient.listNames();
             } catch (IOException erro) {
@@ -95,4 +112,4 @@ public class ServicoFtp {
             return nomeDir;
         }
 
-    }
+}

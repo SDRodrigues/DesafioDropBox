@@ -9,10 +9,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -51,16 +57,32 @@ public class ControleFtp {
             @ApiResponse(code=404, message = "Não encontrou arquivos", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response= Usuario.class)
     })
-    public ArrayList<Arquivos> buscaArquivos(@PathVariable(value = "id") Integer id )  {
+    public ResponseEntity<ArrayList<Arquivos>> buscaArquivos(@PathVariable(value = "id") Integer id )  {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
-        return this.servicoFtp.buscaArquivos(usuario);
+        return ResponseEntity.ok().body(this.servicoFtp.buscaArquivos(usuario));
+    }
+
+    @GetMapping(value = "/usuarios/{id}/pagina/{paginas}/arquivos/{quantidade}")
+    @ApiOperation(value="Busca arquivos paginados do usuario", response= Usuario.class,
+            notes="Essa operação busca os arquivos paginados do usuário.")
+    @ApiResponses(value= {
+            @ApiResponse(code=201, message="Buscou arquivos com sucesso", response= Usuario.class),
+            @ApiResponse(code=404, message = "Não encontrou arquivos", response = Usuario.class),
+            @ApiResponse(code=500, message="Erro interno", response= Usuario.class)
+    })
+    public Page<Arquivos> arquivosPaginados(@PathVariable(value = "id") Integer id,
+                                            @PathVariable Integer paginas,
+                                            @PathVariable Integer quantidade )  {
+        Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
+        return servicoFtp.buscaArquivosPaginados(usuario, quantidade, paginas);
     }
 
     @DeleteMapping(value = "/{id}")
-    @ApiOperation(value = "Delete user file")
-    public void deleteFile(@PathVariable Integer id, @RequestBody String nomeArquivo) {
+    @ApiOperation(value = "Deleta arquivos do usuário")
+    public ResponseEntity<Void> deleteFile(@PathVariable Integer id, @RequestBody String nomeArquivo) {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
         servicoFtp.excluirArquivos(usuario, nomeArquivo);
+        return ResponseEntity.noContent().build();
     }
 
 }
