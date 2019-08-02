@@ -1,5 +1,6 @@
 package com.desafioftp.desafio.service;
 
+import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.server.Conexao;
@@ -8,6 +9,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
@@ -55,6 +58,7 @@ public class ServicoFtp {
         return false;
     }
 
+
     public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
         try {
             conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
@@ -72,44 +76,22 @@ public class ServicoFtp {
         }
     }
 
-    public FTPFile[] buscaArquivosDoUsuario(Optional<Usuario> usuario) {
+    public boolean excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
         try {
             conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            ftpClient.enterLocalPassiveMode();
-            return ftpClient.listFiles();
-        } catch (IOException erro) {
-            erro.getMessage();
-            return null;
-        }
-    }
-
-    public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
-        try {
-            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            ftpClient.deleteFile(nomeArquivo);
+            return ftpClient.deleteFile(nomeArquivo);
         }
         catch (IOException erro) {
             erro.getMessage();
+            return false;
         }
     }
+
 
     public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer quantidade) {
-        conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-        return null;
+         conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+         return null;
     }
 
-    public String[] mudaDiretorio(String diretorio, Usuario usuario) {
-        String[] nomeDir = null;
-            try {
-                conexao.conecta(usuario.getNome(), usuario.getSenha());
-                ftpClient.changeWorkingDirectory(diretorio);
-                nomeDir = ftpClient.listNames();
-            } catch (IOException erro) {
-                erro.getMessage();
-            }finally {
-            conexao.disconecta();
-            }
-            return nomeDir;
-        }
 
 }

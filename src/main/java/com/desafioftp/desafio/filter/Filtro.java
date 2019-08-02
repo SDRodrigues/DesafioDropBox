@@ -16,7 +16,7 @@ public class Filtro implements Filter {
         System.out.println("Request " + req.getRequestURI());
         chain.doFilter(request, response);
         System.out.println("Response " + res.getContentType());
-        System.out.println("Remote host " + request.getRemoteHost());
-        System.out.println("Remote Address " + request.getRemoteAddr());
+//        System.out.println("Remote host " + request.getRemoteHost());
+//        System.out.println("Remote Address " + request.getRemoteAddr());
     }
 }
