@@ -1,6 +1,5 @@
 package com.desafioftp.desafio.service;
 
-import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.server.Conexao;
@@ -9,10 +8,10 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -53,9 +52,22 @@ public class ServicoFtp {
         }
             catch(IOException erro) {
             erro.getMessage();
-        }
+        } finally {
             conexao.disconecta();
-        return false;
+
+            return false;
+        }
+
+    }
+
+    public FTPFile[] buscaArquivosDoUsuario(Optional<Usuario> usuario) {
+        try {
+            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+            return ftpClient.listFiles();
+        } catch (IOException erro) {
+            erro.getMessage();
+            return null;
+        }
     }
 
 
@@ -88,10 +100,29 @@ public class ServicoFtp {
     }
 
 
-    public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer quantidade) {
-         conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-         return null;
+//    public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer quantidade) {
+//        ftpClient = conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+//        try {
+//            return arquivosPaginados(ftpClient.listFiles(),paginas,quantidade);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return  null;
+//    }
+//
+
+
+    public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, PageRequest pageRequest) {
+        ftpClient = conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+        try {
+            return arquivosPaginados(ftpClient.listFiles(),pageRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  null;
     }
 
-
+    private Page<Arquivos> arquivosPaginados(FTPFile[] listFiles, PageRequest pageRequest) {
+        return null;
+    }
 }

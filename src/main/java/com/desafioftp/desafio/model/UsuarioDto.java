@@ -1,6 +1,8 @@
 package com.desafioftp.desafio.model;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Data
@@ -10,7 +12,7 @@ public class UsuarioDto {
     private Integer idade;
     private String profissao;
     private String senha;
-    private List<Arquivos> arquivos;
+    private List<MultipartFile> arquivos;
 
     public UsuarioDto(Usuario usuario) {
         id = usuario.getId();
@@ -18,15 +20,16 @@ public class UsuarioDto {
         idade = usuario.getIdade();
         profissao = usuario.getProfissao();
         senha = usuario.getSenha();
+        arquivos = usuario.getFiles();
     }
 
-    public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
-        return new Usuario(usuarioDto.getId(),
-                usuarioDto.getNome(),
-                usuarioDto.getIdade(),
-                usuarioDto.getProfissao(),
-                usuarioDto.getSenha(),
-                usuarioDto.getArquivos());
-    }
+//    public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
+//        return new Usuario(usuarioDto.getId(),
+//                usuarioDto.getNome(),
+//                usuarioDto.getIdade(),
+//                usuarioDto.getProfissao(),
+//                usuarioDto.getSenha(),
+//                usuarioDto.getArquivos());
+//    }
 
 }

@@ -21,7 +21,7 @@ public class Conexao {
 
 
 
-    public boolean conecta(String usuario, String senha) {
+    public FTPClient conecta(String usuario, String senha) {
         try {
             ftp.connect(this.servidor, porta);
             if (FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
@@ -34,13 +34,12 @@ public class Conexao {
                 disconecta();
                 System.out.println("Conexão recusada");
                 System.exit(1);
-                return false;
             }
         }
         catch (IOException erro) {
             erro.getMessage();
         }
-        return true;
+        return ftp;
     }
 
     public void disconecta() {
