@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+
+  servidor-ftp:
+    image: bogem/ftp
+    container_name: servidor-ftp
+    environment:
+      FTP_PASS: rodrigues
+      FTP_USER: rodrigues
+      PASV_ADDRESS: 127.0.0.1
+    volumes:
+      - "/home/vsftpd"
+      - "/var/log/vsftpd"
+    ports:
+      - "20:20"
+      - "21:21"
+      - "47400-47470:47400-47470"
+    restart: always
+
+  mongo-db:
+    image: tutum/mongodb
+    container_name: mongo-db
+    environment:
+      AUTH: "no"
+    volumes:
+        - "/data/db"
+    ports:
+      - "27017:27017"
+      - "28017:28017"
+
+
+
+

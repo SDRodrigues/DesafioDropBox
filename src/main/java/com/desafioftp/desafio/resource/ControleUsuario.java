@@ -1,7 +1,6 @@
 package com.desafioftp.desafio.resource;
 
 import com.desafioftp.desafio.model.Usuario;
-import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.service.ServicoUsuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

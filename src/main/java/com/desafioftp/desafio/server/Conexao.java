@@ -3,6 +3,7 @@ package com.desafioftp.desafio.server;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class Conexao {
 
     public FTPClient conecta(String usuario, String senha) {
         try {
-            ftp.connect(this.servidor, porta);
+            ftp.connect(this.server, porta);
             if (FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
                 senha = this.senha;
                 usuario = this.usuario;
@@ -51,6 +52,15 @@ public class Conexao {
         }
     }
 
+
+    public FTPFile[] buscaArquivosDoUsuario() {
+        try {
+            return ftp.listFiles();
+        } catch (IOException erro) {
+            erro.getMessage();
+            return null;
+        }
+    }
 
 
 }

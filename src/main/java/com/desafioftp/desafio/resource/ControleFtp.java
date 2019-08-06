@@ -11,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -65,8 +63,8 @@ public class ControleFtp {
             @ApiResponse(code=500, message="Erro interno", response= Usuario.class)
     })
     public Page<Arquivos> arquivosPaginados(@PathVariable(value = "id") Integer id,
-                                            @PathVariable Integer paginas,
-                                            @PathVariable Integer quantidade )  {
+                                            @RequestParam(value = "paginas") Integer paginas,
+                                            @RequestParam(value = "quantidade") Integer quantidade )  {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
         return servicoFtp.buscaArquivosPaginados(usuario, new PageRequest(paginas, quantidade));
     }

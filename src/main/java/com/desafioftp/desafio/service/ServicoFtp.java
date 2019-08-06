@@ -61,13 +61,8 @@ public class ServicoFtp {
     }
 
     public FTPFile[] buscaArquivosDoUsuario(Optional<Usuario> usuario) {
-        try {
-            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            return ftpClient.listFiles();
-        } catch (IOException erro) {
-            erro.getMessage();
-            return null;
-        }
+        conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+        return conexao.buscaArquivosDoUsuario();
     }
 
 
