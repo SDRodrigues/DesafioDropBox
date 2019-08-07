@@ -14,7 +14,7 @@ import java.util.List;
 @Document
 public class Usuario {
     @Id
-    private Integer id;
+    private String id;
     private String nome;
     private Integer idade;
     private String profissao;

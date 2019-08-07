@@ -1,4 +1,5 @@
 package com.desafioftp.desafio.service;
+
 import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
@@ -25,22 +26,21 @@ public class ServicoUsuario {
         return this.repositorio.findAll();
     }
 
-    public Optional<Usuario> lerUsuarioId(Integer id) {
+    public Optional<Usuario> lerUsuarioId(String id) {
         Optional<Usuario> user = repositorio.findById(id);
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new ObjetoNaoEncontrado("Usuário não encontrado");
         }
         return user;
     }
 
 
-    public void deletaUsuarioId(Integer id) {
+    public void deletaUsuarioId(String id) {
         this.lerUsuarioId(id);
         this.repositorio.deleteById(id);
     }
 
-    public Usuario editaUsuario(Integer id, Usuario usuario) {
-        usuario.setId(id);
+    public Usuario editaUsuario(Usuario usuario) {
         return this.repositorio.save(usuario);
     }
 

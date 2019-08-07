@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class UsuarioDto {
-    private Integer id;
+    private String id;
     private String nome;
     private Integer idade;
     private String profissao;
@@ -19,7 +19,6 @@ public class UsuarioDto {
         nome = usuario.getNome();
         idade = usuario.getIdade();
         profissao = usuario.getProfissao();
-        senha = usuario.getSenha();
         arquivos = usuario.getFiles();
     }
 

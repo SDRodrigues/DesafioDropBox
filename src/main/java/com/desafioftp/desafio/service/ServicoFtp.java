@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -20,62 +19,94 @@ import java.util.Optional;
 @NoArgsConstructor
 public class ServicoFtp {
         private Conexao conexao;
-        private ServicoUsuario servicoUsuario;
-        private FTPClient ftpClient = new FTPClient();
+        private FTPClient ftpClient;
 
 
     @Autowired
-    public ServicoFtp(Conexao conexao, ServicoUsuario servicoUsuario) {
+    public ServicoFtp(Conexao conexao) {
         this.conexao = conexao;
-        this.servicoUsuario = servicoUsuario;
     }
 
     public ServicoFtp(FTPClient ftpClient) {
         this.ftpClient = ftpClient;
     }
 
-    public boolean enviaArquivo(MultipartFile arquivo, Integer id) {
-        FileInputStream arqEnviar;
-        Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
+//    public boolean enviaArquivo(Integer id, MultipartFile arquivo) {
+//        FileInputStream arqEnviar;
+//        Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
+//        try {
+//            File confFile = new File(arquivo.getOriginalFilename());
+//            confFile.createNewFile();
+//            FileOutputStream fos = new FileOutputStream(confFile);
+//            fos.write(arquivo.getBytes());
+//            fos.close();
+//            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+//            arqEnviar = new FileInputStream(String.valueOf(arquivo));
+//            if (ftpClient.storeFile(String.valueOf(arquivo), arqEnviar)) {
+//                return true;
+//            }
+//            arqEnviar.close();
+//        }
+//            catch(IOException erro) {
+//            erro.getMessage();
+//        } finally {
+//            conexao.disconecta();
+//
+//            return false;
+//        }
+//
+//    }
+    private void mudaDiretorio(String id) {
         try {
-            File confFile = new File(arquivo.getOriginalFilename());
-            confFile.createNewFile();
-            FileOutputStream fos = new FileOutputStream(confFile);
-            fos.write(arquivo.getBytes());
-            fos.close();
-            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            arqEnviar = new FileInputStream(String.valueOf(arquivo));
-            if (ftpClient.storeFile(String.valueOf(arquivo), arqEnviar)) {
-                return true;
-            }
-            arqEnviar.close();
-        }
-            catch(IOException erro) {
+            ftpClient.makeDirectory(id);
+            ftpClient.changeWorkingDirectory("/" + id);
+        } catch (IOException erro) {
             erro.getMessage();
-        } finally {
-            conexao.disconecta();
-
-            return false;
         }
+    }
 
+    public void storeFile(String id, MultipartFile file) {
+        ftpClient = conexao.conecta();
+           mudaDiretorio(id);
+        try {
+            ftpClient.storeFile(file.getOriginalFilename(), file.getInputStream());
+        } catch (IOException erro) {
+            erro.getMessage();
+        }
+    }
+
+    public void excluirArquivos(String id, String nomeArquivo) {
+        ftpClient = conexao.conecta();
+          mudaDiretorio(id);
+        try {
+            ftpClient.deleteFile(nomeArquivo);
+        }
+        catch (IOException erro) {
+            erro.getMessage();
+        }
     }
 
     public FTPFile[] buscaArquivosDoUsuario(Optional<Usuario> usuario) {
-        conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-        return conexao.buscaArquivosDoUsuario();
+        try {
+            FTPClient con = conexao.conecta();
+            return con.listFiles();
+        }
+        catch (IOException erro) {
+            erro.getMessage();
+            return null;
+        }
     }
 
 
     public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
         try {
-            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
+            conexao.conecta();
             FTPFile[] files = ftpClient.listFiles();
             ArrayList<Arquivos> listaArquivos = new ArrayList<>();
             for (FTPFile file : files) {
                 Arquivos arquivos = new Arquivos(file);
                 listaArquivos.add(arquivos);
             }
-
              return listaArquivos;
         } catch (IOException erro) {
             erro.getMessage();
@@ -83,41 +114,8 @@ public class ServicoFtp {
         }
     }
 
-    public boolean excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
-        try {
-            conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-            return ftpClient.deleteFile(nomeArquivo);
-        }
-        catch (IOException erro) {
-            erro.getMessage();
-            return false;
-        }
-    }
-
-
-//    public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer quantidade) {
-//        ftpClient = conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-//        try {
-//            return arquivosPaginados(ftpClient.listFiles(),paginas,quantidade);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return  null;
-//    }
-//
-
 
     public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, PageRequest pageRequest) {
-        ftpClient = conexao.conecta(usuario.get().getNome(), usuario.get().getSenha());
-        try {
-            return arquivosPaginados(ftpClient.listFiles(),pageRequest);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return  null;
-    }
-
-    private Page<Arquivos> arquivosPaginados(FTPFile[] listFiles, PageRequest pageRequest) {
         return null;
     }
 }

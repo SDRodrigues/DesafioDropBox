@@ -43,7 +43,7 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Optional<Usuario> consultarId(@PathVariable Integer id){ return this.servicoUsuario.lerUsuarioId(id);
+    public Optional<Usuario> consultarId(@PathVariable String id){ return this.servicoUsuario.lerUsuarioId(id);
     }
 
 
@@ -60,7 +60,7 @@ public class ControleUsuario {
 
     @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o model.")
-    public ResponseEntity<Void> deletaUsuario(@PathVariable Integer id) {
+    public ResponseEntity<Void> deletaUsuario(@PathVariable String id) {
         servicoUsuario.deletaUsuarioId(id);
         return ResponseEntity.noContent().build();
     }
@@ -72,7 +72,7 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Usuario editaUsuario(@PathVariable Integer id, Usuario usuario) {
-        return servicoUsuario.editaUsuario(id, usuario);
+    public Usuario editaUsuario(@RequestBody Usuario usuario) {
+        return servicoUsuario.editaUsuario(usuario);
     }
 }

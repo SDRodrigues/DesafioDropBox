@@ -13,9 +13,9 @@ public class Filtro implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        System.out.println("Request " + req.getRequestURI());
+//        System.out.println("Request " + req.getRequestURI());
         chain.doFilter(request, response);
-        System.out.println("Response " + res.getContentType());
+//        System.out.println("Response " + res.getContentType());
 //        System.out.println("Remote host " + request.getRemoteHost());
 //        System.out.println("Remote Address " + request.getRemoteAddr());
     }

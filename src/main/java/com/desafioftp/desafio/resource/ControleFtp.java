@@ -31,12 +31,12 @@ public class ControleFtp {
     @PostMapping(value = "/{id}")
     @ApiOperation(value="Envia arquivos")
     @ApiResponses(value= {
-            @ApiResponse(code=201, message="Enviou arquivos com sucesso", response= Usuario.class),
-            @ApiResponse(code=404, message = "Não encontrou arquivos", response = Usuario.class),
-            @ApiResponse(code=500, message="Erro interno", response= Usuario.class)
+            @ApiResponse(code=201, message="Enviou arquivos com sucesso"),
+            @ApiResponse(code=404, message = "Não encontrou arquivos"),
+            @ApiResponse(code=500, message="Erro interno")
     })
-    public void upload(@PathVariable(value = "id") Integer id, @RequestParam MultipartFile arquivo)  {
-        this.servicoFtp.enviaArquivo(arquivo, id);
+    public void storeFile(@PathVariable(value = "id") String id, @RequestParam MultipartFile arquivo)  {
+        this.servicoFtp.storeFile(servicoUsuario.lerUsuarioId(id).get().getId(), arquivo);
     }
 
 //    @GetMapping(value = "/{id}")
@@ -49,7 +49,7 @@ public class ControleFtp {
         @GetMapping(value = "/{id}")
     @ApiOperation(value="Busca Arquivos do usuário", response= Usuario.class, notes="Essa operação busca os arquivos" +
             " do usuário.")
-    public FTPFile[] listaArquivos(@PathVariable(value = "id") Integer id ) {
+    public FTPFile[] listaArquivos(@PathVariable(value = "id") String id ) {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
         return this.servicoFtp.buscaArquivosDoUsuario(usuario);
     }
@@ -62,7 +62,7 @@ public class ControleFtp {
             @ApiResponse(code=404, message = "Não encontrou arquivos", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response= Usuario.class)
     })
-    public Page<Arquivos> arquivosPaginados(@PathVariable(value = "id") Integer id,
+    public Page<Arquivos> arquivosPaginados(@PathVariable(value = "id") String id,
                                             @RequestParam(value = "paginas") Integer paginas,
                                             @RequestParam(value = "quantidade") Integer quantidade )  {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
@@ -75,9 +75,9 @@ public class ControleFtp {
     @DeleteMapping(value = "/{id}")
     @ApiParam(name = "id", required = true)
     @ApiOperation(value = "Deleta arquivos do usuário")
-    public void deleteFile(@PathVariable Integer id, @RequestBody String nomeArquivo) {
+    public void deleteFile(@PathVariable String id, @RequestBody String nomeArquivo) {
         Optional<Usuario> usuario = servicoUsuario.lerUsuarioId(id);
-        servicoFtp.excluirArquivos(usuario, nomeArquivo);
+        servicoFtp.excluirArquivos(usuario.get().getId(), nomeArquivo);
     }
 
 }
