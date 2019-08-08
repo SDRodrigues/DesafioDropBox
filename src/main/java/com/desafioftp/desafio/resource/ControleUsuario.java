@@ -6,7 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,16 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("v1/usuarios")
 @Api(value = "usuarios")
 public class ControleUsuario {
 
     private ServicoUsuario servicoUsuario;
 
-    @Autowired
-    public ControleUsuario(ServicoUsuario servicoUsuario) {
-        this.servicoUsuario = servicoUsuario;
-    }
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca os usuários.")
@@ -43,7 +40,7 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Optional<Usuario> consultarId(@PathVariable String id){ return this.servicoUsuario.lerUsuarioId(id);
+    public Optional<Usuario> consultarId(@PathVariable String id){ return this.servicoUsuario.findById(id);
     }
 
 

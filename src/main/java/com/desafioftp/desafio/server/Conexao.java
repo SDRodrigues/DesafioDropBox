@@ -3,7 +3,6 @@ package com.desafioftp.desafio.server;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 
@@ -21,18 +20,20 @@ public class Conexao {
 
 
 
-    public FTPClient conecta() {
-        ftp = new FTPClient();
-        try {
-                ftp.connect(server, porta);
-                ftp.login(this.usuario, this.senha);
-                disconecta();
-            }
-        catch (IOException erro) {
-            erro.getMessage();
-        }
-        return this.ftp;
-    }
+//    public FTPClient conecta() {
+//        ftp = new FTPClient();
+//        try {
+//                ftp.connect(this.server, this.porta);
+//            System.out.println(ftp.getReplyString());
+//                ftp.login(this.usuario, this.senha);
+//            System.out.println(ftp.getReplyString());
+//
+//        }
+//        catch (IOException erro) {
+//            erro.getMessage();
+//        }
+//        return this.ftp;
+//    }
 
     public void disconecta() {
         try {

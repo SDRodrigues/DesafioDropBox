@@ -5,6 +5,8 @@ import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,17 +28,20 @@ public class ServicoUsuario {
         return this.repositorio.findAll();
     }
 
-    public Optional<Usuario> lerUsuarioId(String id) {
-        Optional<Usuario> user = repositorio.findById(id);
-        if (user.isEmpty()) {
+    public Optional<Usuario> findById(String id) {
+        Optional<Usuario> usuario = repositorio.findById(id);
+        if (usuario.isEmpty()) {
             throw new ObjetoNaoEncontrado("Usuário não encontrado");
         }
-        return user;
+        if (usuario.get().getArquivos() == null) {
+            usuario.get().setArquivos(new ArrayList<>());
+        }
+        return usuario;
     }
 
 
     public void deletaUsuarioId(String id) {
-        this.lerUsuarioId(id);
+        this.findById(id);
         this.repositorio.deleteById(id);
     }
 
