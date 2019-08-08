@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,16 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("v1/usuarios")
 @Api(value = "usuarios")
 public class ControleUsuario {
 
     private ServicoUsuario servicoUsuario;
 
+    @Autowired
+    public ControleUsuario(ServicoUsuario servicoUsuario) {
+        this.servicoUsuario = servicoUsuario;
+    }
 
     @GetMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca os usuários.")

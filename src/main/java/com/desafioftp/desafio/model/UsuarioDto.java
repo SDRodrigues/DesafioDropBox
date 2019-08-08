@@ -11,24 +11,27 @@ public class UsuarioDto {
     private String nome;
     private Integer idade;
     private String profissao;
-    private String senha;
-    private List<MultipartFile> arquivos;
+    private List<Arquivos> arquivos;
+    private List<MultipartFile> files;
 
     public UsuarioDto(Usuario usuario) {
         id = usuario.getId();
         nome = usuario.getNome();
         idade = usuario.getIdade();
         profissao = usuario.getProfissao();
-        arquivos = usuario.getFiles();
+        arquivos = usuario.getArquivos();
+        files = usuario.getFiles();
     }
 
-//    public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
-//        return new Usuario(usuarioDto.getId(),
-//                usuarioDto.getNome(),
-//                usuarioDto.getIdade(),
-//                usuarioDto.getProfissao(),
-//                usuarioDto.getSenha(),
-//                usuarioDto.getArquivos());
-//    }
+    public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
+        return new Usuario(
+                usuarioDto.getId(),
+                usuarioDto.getNome(),
+                usuarioDto.getIdade(),
+                usuarioDto.getProfissao(),
+                usuarioDto.getArquivos(),
+                usuarioDto.getFiles()
+        );
+    }
 
 }

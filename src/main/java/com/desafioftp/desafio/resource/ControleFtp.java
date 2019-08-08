@@ -7,32 +7,30 @@ import com.desafioftp.desafio.service.ServicoFtp;
 import com.desafioftp.desafio.service.ServicoUsuario;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("v1/arquivos")
 @Api(value = "arquivos")
 public class ControleFtp {
 
-
      private ServicoFtp servicoFtp;
      private ServicoUsuario servicoUsuario;
 
+     @Autowired
+    public ControleFtp(ServicoFtp servicoFtp, ServicoUsuario servicoUsuario) {
+        this.servicoFtp = servicoFtp;
+        this.servicoUsuario = servicoUsuario;
+    }
 
     @PostMapping(value = "/{id}")
     @ApiOperation(value="Envia arquivos")
@@ -43,7 +41,7 @@ public class ControleFtp {
     })
     public ResponseEntity<String> uploadArquivo(@PathVariable String id, @RequestBody MultipartFile arquivo)  {
         this.servicoFtp.storeFile(servicoUsuario.findById(id).get().getId(), arquivo);
-        return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }
 
         @GetMapping(value = "/{id}")
