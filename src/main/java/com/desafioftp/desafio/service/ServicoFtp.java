@@ -10,6 +10,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
@@ -33,7 +34,6 @@ public class ServicoFtp {
         ftpClient = new FTPClient();
         try {
             ftpClient.connect(this.server, this.porta);
-            System.out.println(ftpClient.getReplyString());
             ftpClient.login(this.nome, this.senha);
             System.out.println(ftpClient.getReplyString());
         }
@@ -96,52 +96,22 @@ public class ServicoFtp {
     }
 
 
-    public Page<Arquivos> buscaArquivosPaginados(Optional<Usuario> usuario, Integer quantidade, Integer pagina) {
+    public void buscaArquivosPaginados(Optional<Usuario> usuario, Pageable pageable) {
+        ftpClient = new FTPClient();
         ftpClient = conecta();
-        return arquivosPaginados(buscaArquivos(usuario), pagina, quantidade);
-    }
-
-    private static Page<Arquivos> arquivosPaginados(ArrayList<Arquivos> arquivos, int pagina, int quantidade) {
-        List<Arquivos> listaArquivos = new ArrayList<>(arquivos);
-        int limiteArquivos = Math.min((quantidade * pagina), listaArquivos.size());
-        return new PageImpl<>(listaArquivos.subList((pagina - 1) * quantidade, limiteArquivos),
-                PageRequest.of(pagina, quantidade), limiteArquivos);
-    }
-
-
-    public void excluirArquivos(String id, String nomeArquivo) {
-        ftpClient = conecta();
-          criarDiretorio(id);
+        criarDiretorio(usuario.get().getId());
         try {
-            ftpClient.deleteFile(nomeArquivo);
-           disconecta();
-        }
-        catch (IOException erro) {
-            erro.getMessage();
-        }
-    }
-
-
-    public void excluiDiretorio(String id) {
-        ftpClient = conecta();
-        try {
-            ftpClient.removeDirectory("/" + id);
+            ftpClient.listFiles(String.valueOf(pageable));
         } catch (IOException erro) {
             erro.getMessage();
         }
     }
 
-    public List<String> getFilesName(String id) {
-        try {
-            criarDiretorio(id);
-            List files = Arrays.asList(ftpClient.listNames());
-            disconecta();
-            return files;
-        } catch (IOException erro) {
-            erro.getMessage();
-        }
-        return new ArrayList<>();
-    }
+
+
+
+
+
 
 
 
@@ -158,6 +128,28 @@ public class ServicoFtp {
             return null;
         } finally {
             disconecta();
+        }
+    }
+
+    public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
+        ftpClient = new FTPClient();
+        ftpClient = conecta();
+        criarDiretorio(usuario.get().getId());
+        try {
+            ftpClient.deleteFile("/" + usuario.get().getId() + "/" + nomeArquivo);
+            disconecta();
+        }
+        catch (IOException erro) {
+            erro.getMessage();
+        }
+    }
+
+    public void excluiDiretorio(String id) {
+        ftpClient = conecta();
+        try {
+            ftpClient.removeDirectory("/" + id);
+        } catch (IOException erro) {
+            erro.getMessage();
         }
     }
 

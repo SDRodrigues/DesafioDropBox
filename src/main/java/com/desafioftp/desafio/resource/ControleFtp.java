@@ -11,10 +11,15 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -53,6 +58,12 @@ public class ControleFtp {
 
 //    @GetMapping(value = "/{id}")
 //    @ApiOperation(value="Busca Arquivos do usuário")
+//    public void buscaArquivos(@PathVariable(value = "id") String id )  {
+//          this.servicoFtp.listaArquivos(id);
+//    }
+
+//    @GetMapping(value = "/{id}")
+//    @ApiOperation(value="Busca Arquivos do usuário")
 //    public FTPFile[] listaUpload(@PathVariable(value = "id") String id ) {
 //        Optional<Usuario> usuario = servicoUsuario.findById(id);
 //        return this.servicoFtp.listaUpload(usuario);
@@ -65,27 +76,28 @@ public class ControleFtp {
             @ApiResponse(code=404, message = "Não encontrou arquivos"),
             @ApiResponse(code=500, message="Erro interno")
     })
-    public Page<Arquivos> arquivosPaginados(@PathVariable(value = "id") String id,
-                                            @RequestParam(value = "paginas") Integer paginas,
-                                            @RequestParam(value = "quantidade") Integer quantidade )  {
+    public void arquivosPaginados(@PathVariable(value = "id") String id,
+                                            @RequestParam(value = "paginas") Optional<Integer> paginas,
+                                            @RequestParam(value = "quantidade") Optional<String> filtro ) {
         Optional<Usuario> usuario = servicoUsuario.findById(id);
-        return servicoFtp.buscaArquivosPaginados(usuario, paginas, quantidade);
+         servicoFtp.buscaArquivosPaginados(usuario, new PageRequest(paginas.orElse(0), 5,
+                Sort.Direction.ASC, filtro.orElse("id")));
     }
 
 
-    @GetMapping(value = "/download")
-    @ApiOperation(value = "Download arquivos")
-    public void downloadArquivo(@RequestBody ArquivoDownload arquivo) {
-        servicoUsuario.findById(arquivo.getNomeArquivo());
-    }
+//    @GetMapping(value = "/download")
+//    @ApiOperation(value = "Download arquivos")
+//    public void downloadArquivo(@RequestBody ArquivoDownload arquivo) {
+//        servicoUsuario.findById(arquivo.getNomeArquivo());
+//    }
 
 
     @DeleteMapping(value = "/{id}")
     @ApiParam(name = "id", required = true)
     @ApiOperation(value = "Deleta arquivos do usuário")
-    public void deleteFile(@PathVariable String id, @RequestBody String nomeArquivo) {
+    public void deletar(@PathVariable String id, @RequestParam String nomeArquivo) {
         Optional<Usuario> usuario = servicoUsuario.findById(id);
-        servicoFtp.excluirArquivos(usuario.get().getId(), nomeArquivo);
+        servicoFtp.excluirArquivos(usuario, nomeArquivo);
     }
 
 
