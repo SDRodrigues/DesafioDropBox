@@ -1,26 +1,16 @@
 package com.desafioftp.desafio.resource;
 
-import com.desafioftp.desafio.model.ArquivoDownload;
-import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.service.ServicoFtp;
 import com.desafioftp.desafio.service.ServicoUsuario;
 import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -49,25 +39,13 @@ public class ControleFtp {
         return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }
 
-        @GetMapping(value = "/{id}")
+
+    @GetMapping(value = "/{id}")
     @ApiOperation(value="Busca Arquivos do usuário")
-    public ArrayList<Arquivos> buscaArquivos(@PathVariable(value = "id") String id )  {
+    public FTPFile[] listaUpload(@PathVariable String id ) {
         Optional<Usuario> usuario = servicoUsuario.findById(id);
-        return this.servicoFtp.buscaArquivos(usuario);
+        return this.servicoFtp.listaUpload(usuario);
     }
-
-//    @GetMapping(value = "/{id}")
-//    @ApiOperation(value="Busca Arquivos do usuário")
-//    public void buscaArquivos(@PathVariable(value = "id") String id )  {
-//          this.servicoFtp.listaArquivos(id);
-//    }
-
-//    @GetMapping(value = "/{id}")
-//    @ApiOperation(value="Busca Arquivos do usuário")
-//    public FTPFile[] listaUpload(@PathVariable(value = "id") String id ) {
-//        Optional<Usuario> usuario = servicoUsuario.findById(id);
-//        return this.servicoFtp.listaUpload(usuario);
-//    }
 
     @GetMapping(value = "/paginas/{id}")
     @ApiOperation(value="Busca arquivos com filtros do usuario")
@@ -76,20 +54,22 @@ public class ControleFtp {
             @ApiResponse(code=404, message = "Não encontrou arquivos"),
             @ApiResponse(code=500, message="Erro interno")
     })
-    public void arquivosPaginados(@PathVariable(value = "id") String id,
-                                            @RequestParam(value = "paginas") Optional<Integer> paginas,
-                                            @RequestParam(value = "quantidade") Optional<String> filtro ) {
+    public Page<FTPFile> arquivosPaginados(@PathVariable String id,
+                                            @RequestParam Integer paginas,
+                                            @RequestParam Integer filtro ) {
         Optional<Usuario> usuario = servicoUsuario.findById(id);
-         servicoFtp.buscaArquivosPaginados(usuario, new PageRequest(paginas.orElse(0), 5,
-                Sort.Direction.ASC, filtro.orElse("id")));
+         return servicoFtp.buscaArquivosPaginados(usuario, paginas, filtro);
     }
 
 
-//    @GetMapping(value = "/download")
-//    @ApiOperation(value = "Download arquivos")
-//    public void downloadArquivo(@RequestBody ArquivoDownload arquivo) {
-//        servicoUsuario.findById(arquivo.getNomeArquivo());
-//    }
+    @ApiOperation(value = "download dos arquivos")
+    @GetMapping(value = "/downloads/{id}")
+    public void downloadArquivo(
+            @ApiParam @PathVariable String id,
+            @ApiParam @RequestParam String arquivo ){
+        Optional<Usuario> usuario = servicoUsuario.findById(id);
+        this.servicoFtp.downloadArquivo(arquivo,usuario);
+    }
 
 
     @DeleteMapping(value = "/{id}")

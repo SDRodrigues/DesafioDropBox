@@ -1,5 +1,6 @@
 package com.desafioftp.desafio.service;
 
+import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,9 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.springframework.data.domain.PageImpl;
+import org.apache.commons.net.ftp.FTPFileFilter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -77,59 +79,59 @@ public class ServicoFtp {
         }
     }
 
-    public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
-        ftpClient = new FTPClient();
-        ftpClient = conecta();
-        criarDiretorio(usuario.get().getId());
-        try {
-            FTPFile[] files = ftpClient.listFiles();
-            ArrayList<Arquivos> listaArquivos = new ArrayList<>();
-            for (FTPFile file : files) {
-                Arquivos arquivos = new Arquivos(file);
-                listaArquivos.add(arquivos);
-            }
-            return listaArquivos;
-        } catch (IOException erro) {
-            erro.getMessage();
-            return null;
-        }
-    }
-
-
-    public void buscaArquivosPaginados(Optional<Usuario> usuario, Pageable pageable) {
-        ftpClient = new FTPClient();
-        ftpClient = conecta();
-        criarDiretorio(usuario.get().getId());
-        try {
-            ftpClient.listFiles(String.valueOf(pageable));
-        } catch (IOException erro) {
-            erro.getMessage();
-        }
-    }
-
-
-
-
-
-
-
-
-
 
     public FTPFile[] listaUpload(Optional<Usuario> usuario) {
         ftpClient = conecta();
+        FTPFile[] files = new FTPFile[0];
         try {
-            ftpClient.changeWorkingDirectory(usuario.get().getId());
-            FTPFile[] ftpFiles = ftpClient.listFiles();
-            return ftpFiles;
+            files = ftpClient.listFiles();
+            criarDiretorio(usuario.get().getId());
+            return files;
         }
         catch (IOException erro) {
             erro.getMessage();
-            return null;
-        } finally {
-            disconecta();
+        }
+        return files;
+    }
+
+
+    public Page<FTPFile> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer filtro) {
+        ftpClient = new FTPClient();
+        ftpClient = conecta();
+        criarDiretorio(usuario.get().getId());
+        try {
+            return getPaginacao(ftpClient.listFiles(),paginas,filtro);
+        } catch (IOException erro) {
+            erro.getMessage();
+        }
+        return null;
+    }
+
+    private Page<FTPFile> getPaginacao(FTPFile[] listFiles, Integer paginas, Integer filtro) {
+        PageRequest pageRequest = new PageRequest(paginas,filtro);
+        List<FTPFile> lista = new ArrayList<>(Arrays.asList(listFiles));
+        int max = Math.min(filtro * (paginas + 1), lista.size());
+        Page<FTPFile> ftpFilePage ;
+        ftpFilePage= new PageImpl<>(lista.subList(paginas*filtro,max), pageRequest,lista.size());
+        return  ftpFilePage;
+    }
+
+    public void downloadArquivo(String arquivo, Optional<Usuario> usuario) {
+        String usuarioId = usuario.get().getId();
+        criarDiretorio(usuarioId);
+        ftpClient = conecta();
+        try {
+            try (FileOutputStream fileOutputStream = new FileOutputStream("arquivos" + arquivo)) {
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.retrieveFile(arquivo, fileOutputStream);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+
+
 
     public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
         ftpClient = new FTPClient();
@@ -153,5 +155,22 @@ public class ServicoFtp {
         }
     }
 
+//    public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
+//        ftpClient = new FTPClient();
+//        ftpClient = conecta();
+//        criarDiretorio(usuario.get().getId());
+//        try {
+//            FTPFile[] files = ftpClient.listFiles();
+//            ArrayList<Arquivos> listaArquivos = new ArrayList<>();
+//            for (FTPFile file : files) {
+//                Arquivos arquivos = new Arquivos(file);
+//                listaArquivos.add(arquivos);
+//            }
+//            return listaArquivos;
+//        } catch (IOException erro) {
+//            erro.getMessage();
+//            return null;
+//        }
+//    }
 
 }

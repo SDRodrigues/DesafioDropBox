@@ -5,7 +5,6 @@ import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +47,5 @@ public class ServicoUsuario {
     public Usuario editaUsuario(Usuario usuario) {
         return this.repositorio.save(usuario);
     }
-
 
 }
