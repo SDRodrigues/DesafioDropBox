@@ -32,9 +32,6 @@ public class ServicoUsuario {
         if (usuario.isEmpty()) {
             throw new ObjetoNaoEncontrado("Usuário não encontrado");
         }
-        if (usuario.get().getArquivos() == null) {
-            usuario.get().setArquivos(new ArrayList<>());
-        }
         return usuario;
     }
 
@@ -48,4 +45,6 @@ public class ServicoUsuario {
         return this.repositorio.save(usuario);
     }
 
+    public void excluirArquivos(String id, String nomeArquivo) {
+    }
 }

@@ -1,18 +1,16 @@
 package com.desafioftp.desafio.service;
 
-import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
-import com.desafioftp.desafio.model.Arquivos;
 import com.desafioftp.desafio.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
@@ -30,6 +28,7 @@ public class ServicoFtp {
         private String nome = "rodrigues";
         private String senha = "rodrigues";
         private int porta = 21;
+        private static final Logger logger = LoggerFactory.getLogger(ServicoFtp.class);
 
 
     private FTPClient conecta() {
@@ -54,7 +53,7 @@ public class ServicoFtp {
         }
     }
 
-    private void criarDiretorio(String id) {
+    private FTPClient criarDiretorio(String id) {
         try {
             if (!Arrays.asList(ftpClient.listDirectories()).contains(id)) {
                 ftpClient.makeDirectory(id);
@@ -63,10 +62,11 @@ public class ServicoFtp {
         } catch (IOException erro) {
             erro.getMessage();
         }
+        return ftpClient;
     }
 
 
-    public void storeFile(String id, MultipartFile file) {
+    public void salvaArquivo(String id, MultipartFile file) {
         ftpClient = conecta();
         ftpClient.enterLocalPassiveMode();
         criarDiretorio(id);
@@ -80,12 +80,12 @@ public class ServicoFtp {
     }
 
 
-    public FTPFile[] listaUpload(Optional<Usuario> usuario) {
+    public FTPFile[] listaTodosArquivos(String id) {
         ftpClient = conecta();
         FTPFile[] files = new FTPFile[0];
         try {
             files = ftpClient.listFiles();
-            criarDiretorio(usuario.get().getId());
+            criarDiretorio(id);
             return files;
         }
         catch (IOException erro) {
@@ -95,19 +95,42 @@ public class ServicoFtp {
     }
 
 
-    public Page<FTPFile> buscaArquivosPaginados(Optional<Usuario> usuario, Integer paginas, Integer filtro) {
+    public Page<FTPFile> listaArquivosPaginados(String id, Integer paginas, Integer filtro) {
         ftpClient = new FTPClient();
         ftpClient = conecta();
-        criarDiretorio(usuario.get().getId());
+        ftpClient.enterLocalPassiveMode();
+        ftpClient = verificaDiretorio(id, ftpClient);
+        criarDiretorio(id);
         try {
-            return getPaginacao(ftpClient.listFiles(),paginas,filtro);
+            return criouArquivosPaginados(ftpClient.listFiles(),paginas,filtro);
         } catch (IOException erro) {
             erro.getMessage();
         }
         return null;
     }
 
-    private Page<FTPFile> getPaginacao(FTPFile[] listFiles, Integer paginas, Integer filtro) {
+    public FTPClient verificaDiretorio(String id, FTPClient ftpClient) {
+        boolean direorioExiste= false;
+        try {
+            FTPFile[] listaDiretorios = ftpClient.listDirectories();
+            for(FTPFile f:listaDiretorios){
+                if(f.getName().equals(id)){
+                    direorioExiste=true;
+                }
+            }
+            if(!direorioExiste) {
+                if (ftpClient.makeDirectory(id)) {
+                    logger.info("Diretorio criado");
+                } else logger.info("Diretorio nao criado");
+            }
+            return criarDiretorio(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ftpClient;
+    }
+
+    private Page<FTPFile> criouArquivosPaginados(FTPFile[] listFiles, Integer paginas, Integer filtro) {
         PageRequest pageRequest = new PageRequest(paginas,filtro);
         List<FTPFile> lista = new ArrayList<>(Arrays.asList(listFiles));
         int max = Math.min(filtro * (paginas + 1), lista.size());
@@ -116,12 +139,14 @@ public class ServicoFtp {
         return  ftpFilePage;
     }
 
-    public void downloadArquivo(String arquivo, Optional<Usuario> usuario) {
-        String usuarioId = usuario.get().getId();
-        criarDiretorio(usuarioId);
+
+
+    public void downloadArquivo(String arquivo, String id) {
+        criarDiretorio(id);
         ftpClient = conecta();
         try {
-            try (FileOutputStream fileOutputStream = new FileOutputStream("arquivos" + arquivo)) {
+            try (FileOutputStream fileOutputStream =
+                         new FileOutputStream("/home/rodrigues/Documents/DesafioDropbox/arquivos/" + arquivo)) {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 ftpClient.retrieveFile(arquivo, fileOutputStream);
             }
@@ -136,9 +161,9 @@ public class ServicoFtp {
     public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
         ftpClient = new FTPClient();
         ftpClient = conecta();
-        criarDiretorio(usuario.get().getId());
+        String recebeId = usuario.get().getId();
         try {
-            ftpClient.deleteFile("/" + usuario.get().getId() + "/" + nomeArquivo);
+            ftpClient.deleteFile("/" + recebeId + "/" + nomeArquivo);
             disconecta();
         }
         catch (IOException erro) {

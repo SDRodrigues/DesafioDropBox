@@ -35,7 +35,7 @@ public class ControleFtp {
             @ApiResponse(code=500, message="Erro interno")
     })
     public ResponseEntity<String> uploadArquivo(@PathVariable String id, @RequestBody MultipartFile arquivo)  {
-        this.servicoFtp.storeFile(servicoUsuario.findById(id).get().getId(), arquivo);
+        this.servicoFtp.salvaArquivo(servicoUsuario.findById(id).get().getId(), arquivo);
         return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }
 
@@ -43,8 +43,15 @@ public class ControleFtp {
     @GetMapping(value = "/{id}")
     @ApiOperation(value="Busca Arquivos do usuário")
     public FTPFile[] listaUpload(@PathVariable String id ) {
-        Optional<Usuario> usuario = servicoUsuario.findById(id);
-        return this.servicoFtp.listaUpload(usuario);
+        return this.servicoFtp.listaTodosArquivos(servicoUsuario.findById(id).get().getId());
+    }
+
+    @ApiOperation(value = "download dos arquivos")
+    @GetMapping(value = "/downloads/{id}")
+    public void downloadArquivo(
+            @ApiParam @PathVariable String id,
+            @ApiParam @RequestParam String arquivo ){
+        this.servicoFtp.downloadArquivo(arquivo,servicoUsuario.findById(id).get().getId());
     }
 
     @GetMapping(value = "/paginas/{id}")
@@ -56,20 +63,12 @@ public class ControleFtp {
     })
     public Page<FTPFile> arquivosPaginados(@PathVariable String id,
                                             @RequestParam Integer paginas,
-                                            @RequestParam Integer filtro ) {
-        Optional<Usuario> usuario = servicoUsuario.findById(id);
-         return servicoFtp.buscaArquivosPaginados(usuario, paginas, filtro);
+                                            @RequestParam Integer quantidade ) {
+         return servicoFtp.listaArquivosPaginados(servicoUsuario.findById(id).get().getId(), paginas, quantidade);
     }
 
 
-    @ApiOperation(value = "download dos arquivos")
-    @GetMapping(value = "/downloads/{id}")
-    public void downloadArquivo(
-            @ApiParam @PathVariable String id,
-            @ApiParam @RequestParam String arquivo ){
-        Optional<Usuario> usuario = servicoUsuario.findById(id);
-        this.servicoFtp.downloadArquivo(arquivo,usuario);
-    }
+
 
 
     @DeleteMapping(value = "/{id}")
