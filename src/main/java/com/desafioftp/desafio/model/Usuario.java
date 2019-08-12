@@ -1,5 +1,6 @@
 package com.desafioftp.desafio.model;
 
+import com.desafioftp.desafio.repository.Repositorio;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,49 +1,46 @@
 package com.desafioftp.desafio.service;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+@RunWith(SpringRunner.class)
+public  class ServicoFtpTest {
 
-@RunWith(Arquillian.class)
-public class ServicoFtpTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(ServicoFtp.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+    @MockBean
+    private ServicoUsuario servicoUsuario;
+
+    @Before
+    public void setUp() throws Exception {
+
     }
 
-    @Test
-    public void salvaArquivo() {
-    }
-
-    @Test
-    public void listaTodosArquivos() {
-    }
-
-    @Test
-    public void listaArquivosPaginados() {
-    }
-
-    @Test
-    public void downloadArquivo() {
-    }
-
-    @Test
-    public void excluirArquivos() {
-    }
-
-    @Test
-    public void excluiDiretorio() {
-    }
-
-    @Test
-    public void arquivosCompartilhados() {
-    }
+//    @Test
+//    public void salvaArquivo() {
+//    }
+//
+//    @Test
+//    public void listaTodosArquivos() {
+//    }
+//
+//    @Test
+//    public void listaArquivosPaginados() {
+//    }
+//
+//    @Test
+//    public void downloadArquivo() {
+//    }
+//
+//    @Test
+//    public void excluirArquivos() {
+//    }
+//
+//    @Test
+//    public void excluiDiretorio() {
+//    }
+//
+//    @Test
+//    public void arquivosCompartilhados() {
+//    }
 }

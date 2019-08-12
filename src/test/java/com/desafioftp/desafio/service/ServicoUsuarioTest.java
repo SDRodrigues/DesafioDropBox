@@ -1,47 +1,65 @@
 package com.desafioftp.desafio.service;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
+import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.repository.Repositorio;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(Arquillian.class)
-public class ServicoUsuarioTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(ServicoUsuario.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+@RunWith(SpringRunner.class)
+public  class ServicoUsuarioTest {
+
+    @MockBean
+    private Repositorio repositorio;
+
+    private ServicoUsuario servicoUsuario;
+    private Usuario usuario;
+
+    private static final String ID = "762";
+    private static final String NOME = "rodrigues";
+    private static final Integer IDADE = 22;
+    private static final String PROFISSAO = "Infa Véia";
+
+
+    @Before
+    public void setUp() throws Exception {
+        servicoUsuario = new ServicoUsuario(repositorio);
+        usuario = new Usuario();
+        usuario.setId(ID);
+        usuario.setNome(NOME);
+        usuario.setIdade(IDADE);
+        usuario.setProfissao(PROFISSAO);
     }
 
     @Test
     public void criarUsuario() {
+        servicoUsuario.criarUsuario(usuario);
+        Mockito.verify(repositorio).insert(usuario);
     }
 
-    @Test
-    public void lerUsuario() {
-    }
-
-    @Test
-    public void findById() {
-    }
-
-    @Test
-    public void deletaUsuarioId(String id) {
-
-    }
-
-    @Test
-    public void editaUsuario() {
-    }
-
-    @Test
-    public void excluirArquivos() {
-    }
+//    @Test
+//    public void lerUsuario() {
+//    }
+//
+//    @Test
+//    public void findById() {
+//    }
+//
+//    @Test
+//    public void deletaUsuarioId() {
+//
+//    }
+//
+//    @Test
+//    public void editaUsuario() {
+//    }
+//
+//    @Test
+//    public void excluirArquivos() {
+//    }
 }

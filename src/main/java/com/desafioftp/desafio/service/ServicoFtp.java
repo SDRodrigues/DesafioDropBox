@@ -3,12 +3,11 @@ package com.desafioftp.desafio.service;
 import com.desafioftp.desafio.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,18 +15,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 @Service
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServicoFtp {
         private FTPClient ftpClient;
-        private static final Logger logger = LoggerFactory.getLogger(ServicoFtp.class);
+        private static final String HOST = "127.0.0.1";
+        private static final Integer PORTA = 21;
+        private static final String USUARIO = "rodrigues";
+        private static final String SENHA = "rodrigues";
         ServicoUsuario servicoUsuario;
 
-        @Autowired
+
+    @Autowired
     public ServicoFtp(ServicoUsuario servicoUsuario) {
         this.servicoUsuario = servicoUsuario;
     }
@@ -35,8 +38,8 @@ public class ServicoFtp {
     private FTPClient conecta() {
         ftpClient = new FTPClient();
         try {
-            ftpClient.connect("127.0.0.1", 21);
-            ftpClient.login("rodrigues", "rodrigues");
+            ftpClient.connect(HOST, PORTA);
+            ftpClient.login(USUARIO, SENHA);
         }
         catch (IOException erro) {
             erro.getMessage();
@@ -69,19 +72,19 @@ public class ServicoFtp {
         boolean direorioExiste= false;
         try {
             FTPFile[] listaDiretorios = ftpClient.listDirectories();
-            for(FTPFile f:listaDiretorios){
-                if(f.getName().equals(id)){
+            for(FTPFile files:listaDiretorios){
+                if(files.getName().equals(id)){
                     direorioExiste=true;
                 }
             }
             if(!direorioExiste) {
                 if (ftpClient.makeDirectory(id)) {
-                    logger.info("Diretorio criado");
-                } else logger.info("Diretorio nao criado");
+                    log.info("Diretorio criado");
+                } else log.info("Diretorio nao criado");
             }
             return criarDiretorio(id);
-        } catch (IOException e) {
-            e.getMessage();
+        } catch (IOException erro) {
+            erro.getMessage();
         }
         return ftpClient;
     }
@@ -134,13 +137,13 @@ public class ServicoFtp {
 
 
 
-    private Page<FTPFile> criouArquivosPaginados(FTPFile[] listFiles, Integer paginas, Integer filtro) {
+    private Page<FTPFile> criouArquivosPaginados(FTPFile[] arquivos, Integer paginas, Integer filtro) {
         PageRequest pageRequest = new PageRequest(paginas,filtro);
-        List<FTPFile> lista = new ArrayList<>(Arrays.asList(listFiles));
+        List<FTPFile> lista = new ArrayList<>(Arrays.asList(arquivos));
         int max = Math.min(filtro * (paginas + 1), lista.size());
-        Page<FTPFile> ftpFilePage ;
-        ftpFilePage= new PageImpl<>(lista.subList(paginas*filtro,max), pageRequest,lista.size());
-        return  ftpFilePage;
+        Page<FTPFile> arquivoPaginado ;
+        arquivoPaginado= new PageImpl<>(lista.subList(paginas*filtro,max), pageRequest,lista.size());
+        return  arquivoPaginado;
     }
 
 
