@@ -1,46 +1,36 @@
 package com.desafioftp.desafio.service;
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.Test;
 
-@RunWith(SpringRunner.class)
-public  class ServicoFtpTest {
+import static org.junit.Assert.*;
 
-    @MockBean
-    private ServicoUsuario servicoUsuario;
+public class ServicoFtpTest {
 
-    @Before
-    public void setUp() throws Exception {
-
+    @Test
+    public void salvaArquivo() {
     }
 
-//    @Test
-//    public void salvaArquivo() {
-//    }
-//
-//    @Test
-//    public void listaTodosArquivos() {
-//    }
-//
-//    @Test
-//    public void listaArquivosPaginados() {
-//    }
-//
-//    @Test
-//    public void downloadArquivo() {
-//    }
-//
-//    @Test
-//    public void excluirArquivos() {
-//    }
-//
-//    @Test
-//    public void excluiDiretorio() {
-//    }
-//
-//    @Test
-//    public void arquivosCompartilhados() {
-//    }
+    @Test
+    public void listaTodosArquivos() {
+    }
+
+    @Test
+    public void listaArquivosPaginados() {
+    }
+
+    @Test
+    public void downloadArquivo() {
+    }
+
+    @Test
+    public void excluirArquivos() {
+    }
+
+    @Test
+    public void excluiDiretorio() {
+    }
+
+    @Test
+    public void arquivosCompartilhados() {
+    }
 }
