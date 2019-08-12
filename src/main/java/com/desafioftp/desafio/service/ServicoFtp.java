@@ -24,19 +24,14 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ServicoFtp {
         private FTPClient ftpClient;
-        private String server = "127.0.0.1";
-        private String nome = "rodrigues";
-        private String senha = "rodrigues";
-        private int porta = 21;
         private static final Logger logger = LoggerFactory.getLogger(ServicoFtp.class);
 
 
     private FTPClient conecta() {
         ftpClient = new FTPClient();
         try {
-            ftpClient.connect(this.server, this.porta);
-            ftpClient.login(this.nome, this.senha);
-            System.out.println(ftpClient.getReplyString());
+            ftpClient.connect("127.0.0.1", 21);
+            ftpClient.login("rodrigues", "rodrigues");
         }
         catch (IOException erro) {
             erro.getMessage();
@@ -65,6 +60,27 @@ public class ServicoFtp {
         return ftpClient;
     }
 
+    private FTPClient verificaDiretorio(String id, FTPClient ftpClient) {
+        boolean direorioExiste= false;
+        try {
+            FTPFile[] listaDiretorios = ftpClient.listDirectories();
+            for(FTPFile f:listaDiretorios){
+                if(f.getName().equals(id)){
+                    direorioExiste=true;
+                }
+            }
+            if(!direorioExiste) {
+                if (ftpClient.makeDirectory(id)) {
+                    logger.info("Diretorio criado");
+                } else logger.info("Diretorio nao criado");
+            }
+            return criarDiretorio(id);
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        return ftpClient;
+    }
+
 
     public void salvaArquivo(String id, MultipartFile file) {
         ftpClient = conecta();
@@ -82,6 +98,8 @@ public class ServicoFtp {
 
     public FTPFile[] listaTodosArquivos(String id) {
         ftpClient = conecta();
+        ftpClient.enterLocalPassiveMode();
+        ftpClient = verificaDiretorio(id, ftpClient);
         FTPFile[] files = new FTPFile[0];
         try {
             files = ftpClient.listFiles();
@@ -109,26 +127,7 @@ public class ServicoFtp {
         return null;
     }
 
-    public FTPClient verificaDiretorio(String id, FTPClient ftpClient) {
-        boolean direorioExiste= false;
-        try {
-            FTPFile[] listaDiretorios = ftpClient.listDirectories();
-            for(FTPFile f:listaDiretorios){
-                if(f.getName().equals(id)){
-                    direorioExiste=true;
-                }
-            }
-            if(!direorioExiste) {
-                if (ftpClient.makeDirectory(id)) {
-                    logger.info("Diretorio criado");
-                } else logger.info("Diretorio nao criado");
-            }
-            return criarDiretorio(id);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ftpClient;
-    }
+
 
     private Page<FTPFile> criouArquivosPaginados(FTPFile[] listFiles, Integer paginas, Integer filtro) {
         PageRequest pageRequest = new PageRequest(paginas,filtro);
@@ -151,7 +150,7 @@ public class ServicoFtp {
                 ftpClient.retrieveFile(arquivo, fileOutputStream);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
     }
 
@@ -180,22 +179,5 @@ public class ServicoFtp {
         }
     }
 
-//    public ArrayList<Arquivos> buscaArquivos(Optional<Usuario> usuario) {
-//        ftpClient = new FTPClient();
-//        ftpClient = conecta();
-//        criarDiretorio(usuario.get().getId());
-//        try {
-//            FTPFile[] files = ftpClient.listFiles();
-//            ArrayList<Arquivos> listaArquivos = new ArrayList<>();
-//            for (FTPFile file : files) {
-//                Arquivos arquivos = new Arquivos(file);
-//                listaArquivos.add(arquivos);
-//            }
-//            return listaArquivos;
-//        } catch (IOException erro) {
-//            erro.getMessage();
-//            return null;
-//        }
-//    }
 
 }
