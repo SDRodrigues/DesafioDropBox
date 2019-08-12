@@ -44,6 +44,4 @@ public class ServicoUsuario {
         return this.repositorio.save(usuario);
     }
 
-    public void excluirArquivos(String id, String nomeArquivo) {
-    }
 }

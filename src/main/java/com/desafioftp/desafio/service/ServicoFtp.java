@@ -3,21 +3,21 @@ package com.desafioftp.desafio.service;
 import com.desafioftp.desafio.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Service
 @NoArgsConstructor
@@ -25,7 +25,12 @@ import java.util.Optional;
 public class ServicoFtp {
         private FTPClient ftpClient;
         private static final Logger logger = LoggerFactory.getLogger(ServicoFtp.class);
+        ServicoUsuario servicoUsuario;
 
+        @Autowired
+    public ServicoFtp(ServicoUsuario servicoUsuario) {
+        this.servicoUsuario = servicoUsuario;
+    }
 
     private FTPClient conecta() {
         ftpClient = new FTPClient();
@@ -179,5 +184,18 @@ public class ServicoFtp {
         }
     }
 
-
+    public void arquivosCompartilhados(String idUsuario, String idOutroUsuario, String arquivo) {
+            ftpClient = new FTPClient();
+            downloadArquivo(arquivo,idUsuario);
+            InputStream inputStream = IOUtils.toInputStream(arquivo);
+            ftpClient.enterLocalPassiveMode();
+            try {
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.changeWorkingDirectory("/" + idOutroUsuario);
+                ftpClient.storeFile(arquivo, inputStream);
+                disconecta();
+            } catch (IOException erro) {
+                erro.getMessage();
+            }
+    }
 }

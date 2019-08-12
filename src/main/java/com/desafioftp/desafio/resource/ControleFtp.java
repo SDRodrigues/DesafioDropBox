@@ -11,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -67,6 +71,21 @@ public class ControleFtp {
          return servicoFtp.listaArquivosPaginados(servicoUsuario.findById(id).get().getId(), paginas, quantidade);
     }
 
+    @GetMapping(value = "/compartilha/{idUsuarioEnvia}/arquivos/{idUsuarioRecebe}")
+    @ApiOperation(value="compartilha arquivos")
+    @ApiResponses(value= {
+            @ApiResponse(code=201, message="Buscou arquivos com sucesso"),
+            @ApiResponse(code=404, message = "Não encontrou arquivos"),
+            @ApiResponse(code=500, message="Erro interno")
+    })
+    public void compartilhaArquivos(@PathVariable String idUsuarioEnvia,
+                                             @RequestParam String arquivo,
+                                             @PathVariable String idUsuarioRecebe
+                                             ) {
+         servicoFtp.arquivosCompartilhados(servicoUsuario.findById(idUsuarioEnvia).get().getId(),
+                                                servicoUsuario.findById(idUsuarioRecebe).get().getId(),
+                                                arquivo);
+    }
 
 
 
