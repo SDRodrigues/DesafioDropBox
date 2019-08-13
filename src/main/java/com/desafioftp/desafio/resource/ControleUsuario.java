@@ -29,8 +29,8 @@ public class ControleUsuario {
     @GetMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value="Buscar usuário", response= Usuario.class, notes="Essa operação busca os usuários.")
     @ApiResponses(value= {
-            @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
-            @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
+            @ApiResponse(code=200, message="Retorna os Usuario com uma mensagem de sucesso", response=Usuario.class),
+            @ApiResponse(code=404, message = "Não encontrou usuários", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
     public List<Usuario> consultar(){
@@ -49,7 +49,7 @@ public class ControleUsuario {
 
 
     @PostMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o model.")
+    @ApiOperation(value="Criar usuário", response= Usuario.class, notes="Essa operação cria o usuario.")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Criou um usuário com sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
@@ -60,16 +60,15 @@ public class ControleUsuario {
     }
 
     @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o model.")
-    public ResponseEntity<Void> deletaUsuario(@PathVariable String id) {
+    @ApiOperation(value="Excluir usuário", response= Usuario.class, notes="Essa operação exclui o usuario.")
+    public void deletaUsuario(@PathVariable String id) {
         servicoUsuario.deletaUsuarioId(id);
-        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o model.")
+    @PutMapping(produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value="Editar usuário", response= Usuario.class, notes="Essa operação edita o usuario.")
     @ApiResponses(value= {
-            @ApiResponse(code=200, message="Retorna um Usuario com uma mensagem de sucesso", response=Usuario.class),
+            @ApiResponse(code=200, message="Atualiza um Usuario com uma mensagem de sucesso", response=Usuario.class),
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })

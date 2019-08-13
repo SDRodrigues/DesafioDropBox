@@ -66,7 +66,7 @@ public class ServicoUsuarioTest {
 
     @Test
     public void editaUsuario() {
+        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
         servicoUsuario.editaUsuario(usuario);
-        Mockito.verify(repositorio).save(usuario);
     }
 }

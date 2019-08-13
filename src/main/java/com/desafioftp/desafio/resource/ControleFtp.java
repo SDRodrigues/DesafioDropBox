@@ -37,14 +37,14 @@ public class ControleFtp {
     }
 
 
-    @GetMapping
-    @ApiOperation(value="Busca Arquivos do usuário")
-    public FTPFile[] listaUpload() {
-        return this.servicoFtp.listaTodosArquivos();
-    }
+//    @GetMapping
+//    @ApiOperation(value="Busca Arquivos")
+//    public FTPFile[] listaUpload() {
+//        return this.servicoFtp.listaTodosArquivos();
+//    }
 
 
-    @GetMapping(value = "/paginas/{id}")
+    @GetMapping(value = "/{id}/{paginas}/{quantidade}")
     @ApiOperation(value="Busca arquivos com filtros do usuario")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Buscou arquivos com sucesso"),
@@ -52,8 +52,8 @@ public class ControleFtp {
             @ApiResponse(code=500, message="Erro interno")
     })
     public Page<FTPFile> arquivosPaginados(@PathVariable String id,
-                                            @RequestParam Integer paginas,
-                                            @RequestParam Integer quantidade ) {
+                                            @PathVariable Integer paginas,
+                                            @PathVariable Integer quantidade ) {
          return servicoFtp.listaArquivosPaginados(servicoUsuario.findById(id).get().getId(), paginas, quantidade);
     }
 

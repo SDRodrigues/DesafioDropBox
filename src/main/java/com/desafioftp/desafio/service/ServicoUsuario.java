@@ -44,7 +44,7 @@ public class ServicoUsuario {
 
     public Usuario editaUsuario(Usuario usuario) {
         Usuario novoUsuario = atualizandoUsuario(usuario.getId());
-        atualizaUsuario(Optional.ofNullable(novoUsuario), usuario);
+        atualizaUsuario(Optional.of(novoUsuario), usuario);
         return this.repositorio.save(novoUsuario);
     }
 

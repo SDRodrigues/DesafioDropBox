@@ -61,6 +61,7 @@ public class ServicoFtp {
             if (!Arrays.asList(ftpClient.listDirectories()).contains(id)) {
                 ftpClient.makeDirectory(id);
             }
+//            ftpClient.changeWorkingDirectory("/" + id);
         } catch (IOException erro) {
             log.error(String.valueOf(erro));
         }
@@ -127,30 +128,14 @@ public class ServicoFtp {
     }
 
 
-    public FTPFile[] listaTodosArquivos() {
-        ftpClient = conecta();
-        ftpClient.enterLocalPassiveMode();
-//        ftpClient = verificaDiretorio(id, ftpClient);
-        FTPFile[] files = new FTPFile[0];
-        try {
-            files = ftpClient.listFiles();
-//            criarDiretorio(id);
-            return files;
-        }
-        catch (IOException erro) {
-            log.error(String.valueOf(erro));
-        }
-        return files;
-    }
-
-
     public Page<FTPFile> listaArquivosPaginados(String id, Integer paginas, Integer filtro) {
         ftpClient = new FTPClient();
         ftpClient = conecta();
         ftpClient.enterLocalPassiveMode();
         ftpClient = verificaDiretorio(id, ftpClient);
-        criarDiretorio(id);
+//        criarDiretorio(id);
         try {
+            ftpClient.changeWorkingDirectory("/" + id);
             return criouArquivosPaginados(ftpClient.listFiles(),paginas,filtro);
         } catch (IOException erro) {
             log.error(String.valueOf(erro));
@@ -158,6 +143,22 @@ public class ServicoFtp {
         return null;
     }
 
+    public void arquivosCompartilhados(String idUsuario, String idOutroUsuario, String arquivo) {
+        ftpClient = new FTPClient();
+        downloadArquivo(arquivo,idUsuario);
+        InputStream inputStream = IOUtils.toInputStream(arquivo);
+        ftpClient.enterLocalPassiveMode();
+        try {
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            ftpClient.changeToParentDirectory();
+            ftpClient.changeWorkingDirectory("/" + idOutroUsuario);
+            ftpClient.storeFile(arquivo, inputStream);
+//                inputStream.close();
+            disconecta();
+        } catch (IOException erro) {
+            log.error(String.valueOf(erro));
+        }
+    }
 
     public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
         ftpClient = new FTPClient();
@@ -172,22 +173,7 @@ public class ServicoFtp {
         }
     }
 
-    public void arquivosCompartilhados(String idUsuario, String idOutroUsuario, String arquivo) {
-            ftpClient = new FTPClient();
-            downloadArquivo(arquivo,idUsuario);
-            InputStream inputStream = IOUtils.toInputStream(arquivo);
-            ftpClient.enterLocalPassiveMode();
-            try {
-                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                ftpClient.changeToParentDirectory();
-                ftpClient.changeWorkingDirectory("/" + idOutroUsuario);
-                ftpClient.storeFile(arquivo, inputStream);
-//                inputStream.close();
-                disconecta();
-            } catch (IOException erro) {
-                log.error(String.valueOf(erro));
-            }
-    }
+
 
 //        public void excluiDiretorio(String id) {
 //        ftpClient = conecta();
@@ -196,5 +182,23 @@ public class ServicoFtp {
 //        } catch (IOException erro) {
 //            erro.getMessage();
 //        }
+//    }
+
+
+
+    //    public FTPFile[] listaTodosArquivos() {
+//        ftpClient = conecta();
+//        ftpClient.enterLocalPassiveMode();
+////        ftpClient = verificaDiretorio(id, ftpClient);
+//        FTPFile[] files = new FTPFile[0];
+//        try {
+//            files = ftpClient.listFiles();
+////            criarDiretorio(id);
+//            return files;
+//        }
+//        catch (IOException erro) {
+//            log.error(String.valueOf(erro));
+//        }
+//        return files;
 //    }
 }
