@@ -61,7 +61,7 @@ public class ServicoFtp {
             if (!Arrays.asList(ftpClient.listDirectories()).contains(id)) {
                 ftpClient.makeDirectory(id);
             }
-            ftpClient.changeWorkingDirectory("/" + id);
+//            ftpClient.changeWorkingDirectory("/" + id);
         } catch (IOException erro) {
             erro.printStackTrace();
         }
@@ -118,6 +118,7 @@ public class ServicoFtp {
         ftpClient.enterLocalPassiveMode();
         criarDiretorio(id);
         try {
+            ftpClient.changeWorkingDirectory("/" + id);
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             ftpClient.storeFile(file.getOriginalFilename(), file.getInputStream());
             disconecta();
@@ -176,9 +177,11 @@ public class ServicoFtp {
             ftpClient = new FTPClient();
             downloadArquivo(arquivo,idUsuario);
             InputStream inputStream = IOUtils.toInputStream(arquivo);
+//        InputStream inputStream = IOUtils.toInputStream(arquivo);
             ftpClient.enterLocalPassiveMode();
             try {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.changeToParentDirectory();
                 ftpClient.changeWorkingDirectory("/" + idOutroUsuario);
                 ftpClient.storeFile(arquivo, inputStream);
                 disconecta();
@@ -187,7 +190,7 @@ public class ServicoFtp {
             }
     }
 
-    //    public void excluiDiretorio(String id) {
+//        public void excluiDiretorio(String id) {
 //        ftpClient = conecta();
 //        try {
 //            ftpClient.removeDirectory("/" + id);

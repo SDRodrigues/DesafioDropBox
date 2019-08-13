@@ -70,7 +70,7 @@ public class ControleFtp {
          return servicoFtp.listaArquivosPaginados(servicoUsuario.findById(id).get().getId(), paginas, quantidade);
     }
 
-    @GetMapping(value = "/compartilha/{idUsuarioEnvia}/{arquivos}/{idUsuarioRecebe}")
+    @GetMapping(value = "/compartilha/{idUsuarioEnvia}/{arquivo}/{idUsuarioRecebe}")
     @ApiOperation(value="compartilha arquivos")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Buscou arquivos com sucesso"),
