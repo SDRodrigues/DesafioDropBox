@@ -127,14 +127,14 @@ public class ServicoFtp {
     }
 
 
-    public FTPFile[] listaTodosArquivos(String id) {
+    public FTPFile[] listaTodosArquivos() {
         ftpClient = conecta();
         ftpClient.enterLocalPassiveMode();
-        ftpClient = verificaDiretorio(id, ftpClient);
+//        ftpClient = verificaDiretorio(id, ftpClient);
         FTPFile[] files = new FTPFile[0];
         try {
             files = ftpClient.listFiles();
-            criarDiretorio(id);
+//            criarDiretorio(id);
             return files;
         }
         catch (IOException erro) {

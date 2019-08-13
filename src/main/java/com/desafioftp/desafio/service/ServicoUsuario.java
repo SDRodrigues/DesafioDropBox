@@ -43,7 +43,26 @@ public class ServicoUsuario {
     }
 
     public Usuario editaUsuario(Usuario usuario) {
-        return this.repositorio.save(usuario);
+        Usuario novoUsuario = atualizandoUsuario(usuario.getId());
+        atualizaUsuario(Optional.ofNullable(novoUsuario), usuario);
+        return this.repositorio.save(novoUsuario);
     }
+
+    private Usuario atualizandoUsuario(String id) {
+        Optional<Usuario> usuario = this.repositorio.findById(id);
+        if (usuario.isPresent()) {
+            return usuario.get();
+        } else {
+            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+        }
+    }
+
+    private void atualizaUsuario(Optional<Usuario> novoUsuario, Usuario usuario) {
+        novoUsuario.get().setId(usuario.getId());
+        novoUsuario.get().setNome(usuario.getNome());
+        novoUsuario.get().setIdade(usuario.getIdade());
+        novoUsuario.get().setProfissao(usuario.getProfissao());
+    }
+
 
 }

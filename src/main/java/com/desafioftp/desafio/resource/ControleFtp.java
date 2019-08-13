@@ -37,10 +37,10 @@ public class ControleFtp {
     }
 
 
-    @GetMapping(value = "/{id}")
+    @GetMapping
     @ApiOperation(value="Busca Arquivos do usuário")
-    public FTPFile[] listaUpload(@PathVariable String id ) {
-        return this.servicoFtp.listaTodosArquivos(servicoUsuario.findById(id).get().getId());
+    public FTPFile[] listaUpload() {
+        return this.servicoFtp.listaTodosArquivos();
     }
 
 
