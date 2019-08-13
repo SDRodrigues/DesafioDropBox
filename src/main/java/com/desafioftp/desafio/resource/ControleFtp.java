@@ -7,14 +7,8 @@ import io.swagger.annotations.*;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -49,13 +43,6 @@ public class ControleFtp {
         return this.servicoFtp.listaTodosArquivos(servicoUsuario.findById(id).get().getId());
     }
 
-//    @ApiOperation(value = "download dos arquivos")
-//    @GetMapping(value = "/downloads/{id}")
-//    public void downloadArquivo(
-//            @ApiParam @PathVariable String id,
-//            @ApiParam @RequestParam String arquivo ){
-//        this.servicoFtp.downloadArquivo(arquivo,servicoUsuario.findById(id).get().getId());
-//    }
 
     @GetMapping(value = "/paginas/{id}")
     @ApiOperation(value="Busca arquivos com filtros do usuario")
@@ -87,8 +74,6 @@ public class ControleFtp {
     }
 
 
-
-
     @DeleteMapping(value = "/{id}")
     @ApiParam(name = "id", required = true)
     @ApiOperation(value = "Deleta arquivos do usuário")
@@ -96,7 +81,6 @@ public class ControleFtp {
         Optional<Usuario> usuario = servicoUsuario.findById(id);
         servicoFtp.excluirArquivos(usuario, nomeArquivo);
     }
-
 
 
 }

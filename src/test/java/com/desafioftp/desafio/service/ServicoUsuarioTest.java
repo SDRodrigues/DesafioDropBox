@@ -5,10 +5,8 @@ import com.desafioftp.desafio.repository.Repositorio;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -54,15 +52,21 @@ public class ServicoUsuarioTest {
 
     @Test
     public void findById() {
+        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
         servicoUsuario.findById(ID);
-        BDDMockito.when(repositorio.findById(ID)).thenReturn(Optional.of(usuario));
     }
 
     @Test
     public void deletaUsuarioId() {
+        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
+        servicoUsuario.findById(ID);
+        servicoUsuario.deletaUsuarioId(ID);
+        Mockito.verify(repositorio).deleteById(ID);
     }
 
     @Test
     public void editaUsuario() {
+        servicoUsuario.editaUsuario(usuario);
+        Mockito.verify(repositorio).save(usuario);
     }
 }

@@ -42,7 +42,7 @@ public class ServicoFtp {
             ftpClient.login(USUARIO, SENHA);
         }
         catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
         return this.ftpClient;
     }
@@ -52,7 +52,7 @@ public class ServicoFtp {
             ftpClient.logout();
             ftpClient.disconnect();
         } catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
     }
 
@@ -61,9 +61,8 @@ public class ServicoFtp {
             if (!Arrays.asList(ftpClient.listDirectories()).contains(id)) {
                 ftpClient.makeDirectory(id);
             }
-//            ftpClient.changeWorkingDirectory("/" + id);
         } catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
         return ftpClient;
     }
@@ -84,7 +83,7 @@ public class ServicoFtp {
             }
             return criarDiretorio(id);
         } catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
         return ftpClient;
     }
@@ -108,7 +107,7 @@ public class ServicoFtp {
                 ftpClient.retrieveFile(arquivo, fileOutputStream);
             }
         } catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
     }
 
@@ -123,7 +122,7 @@ public class ServicoFtp {
             ftpClient.storeFile(file.getOriginalFilename(), file.getInputStream());
             disconecta();
         } catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
     }
 
@@ -139,7 +138,7 @@ public class ServicoFtp {
             return files;
         }
         catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
         return files;
     }
@@ -154,7 +153,7 @@ public class ServicoFtp {
         try {
             return criouArquivosPaginados(ftpClient.listFiles(),paginas,filtro);
         } catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
         return null;
     }
@@ -169,7 +168,7 @@ public class ServicoFtp {
             disconecta();
         }
         catch (IOException erro) {
-            erro.printStackTrace();
+            log.error(String.valueOf(erro));
         }
     }
 
@@ -177,16 +176,16 @@ public class ServicoFtp {
             ftpClient = new FTPClient();
             downloadArquivo(arquivo,idUsuario);
             InputStream inputStream = IOUtils.toInputStream(arquivo);
-//        InputStream inputStream = IOUtils.toInputStream(arquivo);
             ftpClient.enterLocalPassiveMode();
             try {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 ftpClient.changeToParentDirectory();
                 ftpClient.changeWorkingDirectory("/" + idOutroUsuario);
                 ftpClient.storeFile(arquivo, inputStream);
+//                inputStream.close();
                 disconecta();
             } catch (IOException erro) {
-                erro.printStackTrace();
+                log.error(String.valueOf(erro));
             }
     }
 

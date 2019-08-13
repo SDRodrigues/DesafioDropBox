@@ -3,12 +3,14 @@ package com.desafioftp.desafio.service;
 import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@NoArgsConstructor
 public class ServicoUsuario {
 
     private Repositorio repositorio;
