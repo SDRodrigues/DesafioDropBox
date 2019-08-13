@@ -19,15 +19,7 @@ public class ServicoFtpTest {
     }
 
     @Test
-    public void downloadArquivo() {
-    }
-
-    @Test
     public void excluirArquivos() {
-    }
-
-    @Test
-    public void excluiDiretorio() {
     }
 
     @Test

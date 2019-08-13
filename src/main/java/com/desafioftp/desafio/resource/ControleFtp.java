@@ -38,9 +38,8 @@ public class ControleFtp {
             @ApiResponse(code=404, message = "Não encontrou arquivos"),
             @ApiResponse(code=500, message="Erro interno")
     })
-    public ResponseEntity<String> uploadArquivo(@PathVariable String id, @RequestBody MultipartFile arquivo)  {
+    public void uploadArquivo(@PathVariable String id, @RequestBody MultipartFile arquivo)  {
         this.servicoFtp.salvaArquivo(servicoUsuario.findById(id).get().getId(), arquivo);
-        return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }
 
 
@@ -50,13 +49,13 @@ public class ControleFtp {
         return this.servicoFtp.listaTodosArquivos(servicoUsuario.findById(id).get().getId());
     }
 
-    @ApiOperation(value = "download dos arquivos")
-    @GetMapping(value = "/downloads/{id}")
-    public void downloadArquivo(
-            @ApiParam @PathVariable String id,
-            @ApiParam @RequestParam String arquivo ){
-        this.servicoFtp.downloadArquivo(arquivo,servicoUsuario.findById(id).get().getId());
-    }
+//    @ApiOperation(value = "download dos arquivos")
+//    @GetMapping(value = "/downloads/{id}")
+//    public void downloadArquivo(
+//            @ApiParam @PathVariable String id,
+//            @ApiParam @RequestParam String arquivo ){
+//        this.servicoFtp.downloadArquivo(arquivo,servicoUsuario.findById(id).get().getId());
+//    }
 
     @GetMapping(value = "/paginas/{id}")
     @ApiOperation(value="Busca arquivos com filtros do usuario")
@@ -71,7 +70,7 @@ public class ControleFtp {
          return servicoFtp.listaArquivosPaginados(servicoUsuario.findById(id).get().getId(), paginas, quantidade);
     }
 
-    @GetMapping(value = "/compartilha/{idUsuarioEnvia}/arquivos/{idUsuarioRecebe}")
+    @GetMapping(value = "/compartilha/{idUsuarioEnvia}/{arquivos}/{idUsuarioRecebe}")
     @ApiOperation(value="compartilha arquivos")
     @ApiResponses(value= {
             @ApiResponse(code=201, message="Buscou arquivos com sucesso"),
@@ -79,7 +78,7 @@ public class ControleFtp {
             @ApiResponse(code=500, message="Erro interno")
     })
     public void compartilhaArquivos(@PathVariable String idUsuarioEnvia,
-                                             @RequestParam String arquivo,
+                                             @PathVariable String arquivo,
                                              @PathVariable String idUsuarioRecebe
                                              ) {
          servicoFtp.arquivosCompartilhados(servicoUsuario.findById(idUsuarioEnvia).get().getId(),

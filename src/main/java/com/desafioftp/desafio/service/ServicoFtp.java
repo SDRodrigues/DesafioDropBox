@@ -42,7 +42,7 @@ public class ServicoFtp {
             ftpClient.login(USUARIO, SENHA);
         }
         catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
         return this.ftpClient;
     }
@@ -52,7 +52,7 @@ public class ServicoFtp {
             ftpClient.logout();
             ftpClient.disconnect();
         } catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
     }
 
@@ -63,7 +63,7 @@ public class ServicoFtp {
             }
             ftpClient.changeWorkingDirectory("/" + id);
         } catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
         return ftpClient;
     }
@@ -84,9 +84,32 @@ public class ServicoFtp {
             }
             return criarDiretorio(id);
         } catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
         return ftpClient;
+    }
+
+    private Page<FTPFile> criouArquivosPaginados(FTPFile[] arquivos, Integer paginas, Integer filtro) {
+        PageRequest pageRequest = new PageRequest(paginas,filtro);
+        List<FTPFile> lista = new ArrayList<>(Arrays.asList(arquivos));
+        int max = Math.min(filtro * (paginas + 1), lista.size());
+        Page<FTPFile> arquivoPaginado ;
+        arquivoPaginado= new PageImpl<>(lista.subList(paginas*filtro,max), pageRequest,lista.size());
+        return  arquivoPaginado;
+    }
+
+    private void downloadArquivo(String arquivo, String id) {
+        criarDiretorio(id);
+        ftpClient = conecta();
+        try {
+            try (FileOutputStream fileOutputStream =
+                         new FileOutputStream("/home/rodrigues/Documents/DesafioDropbox/arquivos/" + arquivo)) {
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.retrieveFile(arquivo, fileOutputStream);
+            }
+        } catch (IOException erro) {
+            erro.printStackTrace();
+        }
     }
 
 
@@ -99,7 +122,7 @@ public class ServicoFtp {
             ftpClient.storeFile(file.getOriginalFilename(), file.getInputStream());
             disconecta();
         } catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
     }
 
@@ -115,7 +138,7 @@ public class ServicoFtp {
             return files;
         }
         catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
         return files;
     }
@@ -130,39 +153,10 @@ public class ServicoFtp {
         try {
             return criouArquivosPaginados(ftpClient.listFiles(),paginas,filtro);
         } catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
         return null;
     }
-
-
-
-    private Page<FTPFile> criouArquivosPaginados(FTPFile[] arquivos, Integer paginas, Integer filtro) {
-        PageRequest pageRequest = new PageRequest(paginas,filtro);
-        List<FTPFile> lista = new ArrayList<>(Arrays.asList(arquivos));
-        int max = Math.min(filtro * (paginas + 1), lista.size());
-        Page<FTPFile> arquivoPaginado ;
-        arquivoPaginado= new PageImpl<>(lista.subList(paginas*filtro,max), pageRequest,lista.size());
-        return  arquivoPaginado;
-    }
-
-
-
-    public void downloadArquivo(String arquivo, String id) {
-        criarDiretorio(id);
-        ftpClient = conecta();
-        try {
-            try (FileOutputStream fileOutputStream =
-                         new FileOutputStream("/home/rodrigues/Documents/DesafioDropbox/arquivos/" + arquivo)) {
-                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                ftpClient.retrieveFile(arquivo, fileOutputStream);
-            }
-        } catch (IOException e) {
-            e.getMessage();
-        }
-    }
-
-
 
 
     public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
@@ -174,16 +168,7 @@ public class ServicoFtp {
             disconecta();
         }
         catch (IOException erro) {
-            erro.getMessage();
-        }
-    }
-
-    public void excluiDiretorio(String id) {
-        ftpClient = conecta();
-        try {
-            ftpClient.removeDirectory("/" + id);
-        } catch (IOException erro) {
-            erro.getMessage();
+            erro.printStackTrace();
         }
     }
 
@@ -198,7 +183,16 @@ public class ServicoFtp {
                 ftpClient.storeFile(arquivo, inputStream);
                 disconecta();
             } catch (IOException erro) {
-                erro.getMessage();
+                erro.printStackTrace();
             }
     }
+
+    //    public void excluiDiretorio(String id) {
+//        ftpClient = conecta();
+//        try {
+//            ftpClient.removeDirectory("/" + id);
+//        } catch (IOException erro) {
+//            erro.getMessage();
+//        }
+//    }
 }

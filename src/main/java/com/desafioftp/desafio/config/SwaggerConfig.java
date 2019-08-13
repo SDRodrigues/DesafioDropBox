@@ -1,4 +1,4 @@
-package com.desafioftp.desafio;
+package com.desafioftp.desafio.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.RequestHandlerSelectors;

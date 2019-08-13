@@ -4,15 +4,21 @@ import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringRunner.class)
 public class ServicoUsuarioTest {
 
-    @MockBean
+    @Mock
     private Repositorio repositorio;
 
     private ServicoUsuario servicoUsuario;
@@ -49,7 +55,7 @@ public class ServicoUsuarioTest {
     @Test
     public void findById() {
         servicoUsuario.findById(ID);
-        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.of(usuario));
+        BDDMockito.when(repositorio.findById(ID)).thenReturn(Optional.of(usuario));
     }
 
     @Test
