@@ -29,6 +29,36 @@ services:
       - "27017:27017"
       - "28017:28017"
 
+  postgresql:
+    image: bitnami/postgresql
+    container_name: postgresql
+    ports:
+      - '5432:5432'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
 
+  sonarqube:
+    image: bitnami/sonarqube
+    container_name: sonarqube
+    ports:
+      - '9000:9000'
+    environment:
+      - POSTGRESQL_HOST=postgresql
+      - POSTGRESQL_ROOT_USER=rodrigues
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_NAME=rodrigues
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_USERNAME=rodrigues
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD=rodrigues
+      - SONARQUBE_DATABASE_NAME=rodrigues
+      - SONARQUBE_DATABASE_USER=rodrigues
+      - SONARQUBE_DATABASE_PASSWORD=rodrigues
+    volumes:
+      - "sonarqube_data:/bitnami"
 
+volumes:
+  sonarqube_data:
+    driver: local
+  postgresql_data:
+    driver: local
 

@@ -103,7 +103,7 @@ public class ServicoFtp {
         ftpClient = conecta();
         try {
             try (FileOutputStream fileOutputStream =
-                         new FileOutputStream("/home/rodrigues/Documents/DesafioDropbox/arquivos/" + arquivo)) {
+                         new FileOutputStream("/arquivos/" + arquivo)) {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 ftpClient.retrieveFile(arquivo, fileOutputStream);
             }
@@ -153,7 +153,7 @@ public class ServicoFtp {
             ftpClient.changeToParentDirectory();
             ftpClient.changeWorkingDirectory("/" + idOutroUsuario);
             ftpClient.storeFile(arquivo, inputStream);
-//                inputStream.close();
+                inputStream.close();
             disconecta();
         } catch (IOException erro) {
             log.error(String.valueOf(erro));
