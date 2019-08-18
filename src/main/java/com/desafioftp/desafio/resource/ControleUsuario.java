@@ -1,6 +1,7 @@
 package com.desafioftp.desafio.resource;
 
 import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.service.ServicoUsuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,8 +54,9 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Usuario criaUsuario(@RequestBody Usuario usuario) {
-        return servicoUsuario.criarUsuario(usuario);
+    public void criaUsuario(@RequestBody UsuarioDto usuarioDto) {
+        Usuario usuario = UsuarioDto.dtoParaUsuario(usuarioDto);
+         servicoUsuario.criarUsuario(usuario);
     }
 
     @DeleteMapping(value = "/{id}", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -70,7 +72,8 @@ public class ControleUsuario {
             @ApiResponse(code=404, message = "Não encontrou usuário", response = Usuario.class),
             @ApiResponse(code=500, message="Erro interno", response=Usuario.class)
     })
-    public Usuario editaUsuario(@RequestBody Usuario usuario) {
-        return servicoUsuario.editaUsuario(usuario);
+    public void editaUsuario(@RequestBody UsuarioDto usuarioDto) {
+        Usuario usuario = UsuarioDto.dtoParaUsuario(usuarioDto);
+         servicoUsuario.editaUsuario(usuario);
     }
 }

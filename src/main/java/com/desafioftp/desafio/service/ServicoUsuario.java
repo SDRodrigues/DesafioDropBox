@@ -58,10 +58,15 @@ public class ServicoUsuario {
     }
 
     private void atualizaUsuario(Optional<Usuario> novoUsuario, Usuario usuario) {
-        novoUsuario.get().setId(usuario.getId());
-        novoUsuario.get().setNome(usuario.getNome());
-        novoUsuario.get().setIdade(usuario.getIdade());
-        novoUsuario.get().setProfissao(usuario.getProfissao());
+        if (novoUsuario.isPresent()) {
+            novoUsuario.get().setId(usuario.getId());
+            novoUsuario.get().setNome(usuario.getNome());
+            novoUsuario.get().setIdade(usuario.getIdade());
+            novoUsuario.get().setProfissao(usuario.getProfissao());
+        }
+        else {
+            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+        }
     }
 
 

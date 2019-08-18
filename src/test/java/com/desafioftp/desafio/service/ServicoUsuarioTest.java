@@ -54,6 +54,7 @@ public class ServicoUsuarioTest {
     public void findById() {
         Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
         servicoUsuario.findById(ID);
+
     }
 
     @Test

@@ -3,6 +3,8 @@ package com.desafioftp.desafio.model;
 import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UsuarioDto {
     private String id;
     private String nome;
@@ -16,7 +18,7 @@ public class UsuarioDto {
         profissao = usuario.getProfissao();
     }
 
-    public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
+    public static Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
         return new Usuario(
                 usuarioDto.getId(),
                 usuarioDto.getNome(),

@@ -33,15 +33,8 @@ public class ControleFtp {
             @ApiResponse(code=500, message="Erro interno")
     })
     public void uploadArquivo(@PathVariable String id, @RequestBody MultipartFile arquivo)  {
-        this.servicoFtp.salvaArquivo(servicoUsuario.findById(id).get().getId(), arquivo);
+        this.servicoFtp.salvaArquivo(id, arquivo);
     }
-
-
-//    @GetMapping
-//    @ApiOperation(value="Busca Arquivos")
-//    public FTPFile[] listaUpload() {
-//        return this.servicoFtp.listaTodosArquivos();
-//    }
 
 
     @GetMapping(value = "/{id}/{paginas}/{quantidade}")
@@ -54,7 +47,7 @@ public class ControleFtp {
     public Page<FTPFile> arquivosPaginados(@PathVariable String id,
                                             @PathVariable Integer paginas,
                                             @PathVariable Integer quantidade ) {
-         return servicoFtp.listaArquivosPaginados(servicoUsuario.findById(id).get().getId(), paginas, quantidade);
+         return servicoFtp.listaArquivosPaginados(id, paginas, quantidade);
     }
 
     @GetMapping(value = "/compartilha/{idUsuarioEnvia}/{arquivo}/{idUsuarioRecebe}")
@@ -68,9 +61,7 @@ public class ControleFtp {
                                              @PathVariable String arquivo,
                                              @PathVariable String idUsuarioRecebe
                                              ) {
-         servicoFtp.arquivosCompartilhados(servicoUsuario.findById(idUsuarioEnvia).get().getId(),
-                                                servicoUsuario.findById(idUsuarioRecebe).get().getId(),
-                                                arquivo);
+         servicoFtp.arquivosCompartilhados(idUsuarioEnvia, idUsuarioRecebe, arquivo);
     }
 
 
