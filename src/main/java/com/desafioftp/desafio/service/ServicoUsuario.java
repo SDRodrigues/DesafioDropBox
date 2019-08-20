@@ -2,6 +2,7 @@ package com.desafioftp.desafio.service;
 
 import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.repository.Repositorio;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class ServicoUsuario {
 
     private Repositorio repositorio;
+    private static final String NOTFOUND = "Usuario não encontrado";
 
     @Autowired
     public ServicoUsuario(Repositorio repositorio) {
@@ -31,7 +33,7 @@ public class ServicoUsuario {
     public Optional<Usuario> findById(String id) {
         Optional<Usuario> usuario = repositorio.findById(id);
         if (usuario.isEmpty()) {
-            throw new ObjetoNaoEncontrado("Usuário não encontrado");
+            throw new ObjetoNaoEncontrado(NOTFOUND);
         }
         return usuario;
     }
@@ -53,7 +55,7 @@ public class ServicoUsuario {
         if (usuario.isPresent()) {
             return usuario.get();
         } else {
-            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+            throw new ObjetoNaoEncontrado(NOTFOUND);
         }
     }
 
@@ -65,8 +67,17 @@ public class ServicoUsuario {
             novoUsuario.get().setProfissao(usuario.getProfissao());
         }
         else {
-            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+            throw new ObjetoNaoEncontrado(NOTFOUND);
         }
+    }
+
+    public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
+        return new Usuario(
+                usuarioDto.getId(),
+                usuarioDto.getNome(),
+                usuarioDto.getIdade(),
+                usuarioDto.getProfissao()
+        );
     }
 
 

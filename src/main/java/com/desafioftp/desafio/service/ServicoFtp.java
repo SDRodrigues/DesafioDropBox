@@ -27,6 +27,7 @@ public class ServicoFtp {
         private static final String USUARIO = "rodrigues";
         private static final String SENHA = "rodrigues";
         ServicoUsuario servicoUsuario;
+        private static final String NOTFOUND = "Usuario não encontrado";
 
 
     @Autowired
@@ -101,7 +102,7 @@ public class ServicoFtp {
         ftpClient = conecta();
         try {
             try (FileOutputStream fileOutputStream =
-                         new FileOutputStream("/home/rodrigues/Documents/DesafioDropbox/arquivos/" + arquivo)) {
+                 new FileOutputStream("/home/rodrigues/Documents/DesafioDropbox/arquivos/" + arquivo)) {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 ftpClient.retrieveFile(arquivo, fileOutputStream);
             }
@@ -127,7 +128,7 @@ public class ServicoFtp {
                 log.error(String.valueOf(erro));
             }
         } else {
-            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+            throw new ObjetoNaoEncontrado(NOTFOUND);
         }
     }
 
@@ -147,7 +148,7 @@ public class ServicoFtp {
                 log.error(String.valueOf(erro));
             }
         } else {
-            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+            throw new ObjetoNaoEncontrado(NOTFOUND);
         }
         return null;
     }
@@ -171,7 +172,7 @@ public class ServicoFtp {
                 log.error(String.valueOf(erro));
             }
         } else {
-            throw new ObjetoNaoEncontrado("Usuario não encontrado");
+            throw new ObjetoNaoEncontrado(NOTFOUND);
         }
     }
 

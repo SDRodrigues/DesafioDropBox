@@ -1,47 +1,46 @@
 package com.desafioftp.desafio.service;
 
 import com.desafioftp.desafio.model.Usuario;
+import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.Optional;
-
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 public class ServicoUsuarioTest {
 
-    @Mock
+    @MockBean
     private Repositorio repositorio;
 
     private ServicoUsuario servicoUsuario;
     private Usuario usuario;
+    private UsuarioDto usuarioDto;
+    private Usuario novoUsuario;
 
     private static final String ID = "762";
-    private static final String NOME = "rodrigues";
-    private static final Integer IDADE = 22;
-    private static final String PROFISSAO = "Infa Véia";
 
 
     @Before
     public void setUp() {
         servicoUsuario = new ServicoUsuario(repositorio);
         usuario = new Usuario();
-        usuario.setId(ID);
-        usuario.setNome(NOME);
-        usuario.setIdade(IDADE);
-        usuario.setProfissao(PROFISSAO);
+        usuarioDto = Mockito.mock(UsuarioDto.class);
+        novoUsuario = Mockito.mock(Usuario.class);
+
+
     }
 
     @Test
     public void criarUsuario() {
         servicoUsuario.criarUsuario(usuario);
         Mockito.verify(repositorio).insert(usuario);
+        assertEquals(usuario, usuario);
     }
 
     @Test
@@ -54,7 +53,6 @@ public class ServicoUsuarioTest {
     public void findById() {
         Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
         servicoUsuario.findById(ID);
-
     }
 
     @Test
@@ -67,7 +65,12 @@ public class ServicoUsuarioTest {
 
     @Test
     public void editaUsuario() {
-        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
-        servicoUsuario.editaUsuario(usuario);
+        Mockito.when(repositorio.findById(usuario.getId())).thenReturn(Optional.ofNullable(usuario));
+        servicoUsuario.editaUsuario(novoUsuario);
+    }
+
+    @Test
+    public void dtoParaUsuario() {
+        servicoUsuario.dtoParaUsuario(usuarioDto);
     }
 }

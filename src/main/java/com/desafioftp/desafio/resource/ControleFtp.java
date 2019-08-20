@@ -27,11 +27,6 @@ public class ControleFtp {
 
     @PostMapping(value = "/{id}")
     @ApiOperation(value="Envia arquivos")
-    @ApiResponses(value= {
-            @ApiResponse(code=201, message="Enviou arquivos com sucesso"),
-            @ApiResponse(code=404, message = "Não encontrou arquivos"),
-            @ApiResponse(code=500, message="Erro interno")
-    })
     public void uploadArquivo(@PathVariable String id, @RequestBody MultipartFile arquivo)  {
         this.servicoFtp.salvaArquivo(id, arquivo);
     }
@@ -39,11 +34,6 @@ public class ControleFtp {
 
     @GetMapping(value = "/{id}/{paginas}/{quantidade}")
     @ApiOperation(value="Busca arquivos com filtros do usuario")
-    @ApiResponses(value= {
-            @ApiResponse(code=201, message="Buscou arquivos com sucesso"),
-            @ApiResponse(code=404, message = "Não encontrou arquivos"),
-            @ApiResponse(code=500, message="Erro interno")
-    })
     public Page<FTPFile> arquivosPaginados(@PathVariable String id,
                                             @PathVariable Integer paginas,
                                             @PathVariable Integer quantidade ) {
@@ -52,11 +42,6 @@ public class ControleFtp {
 
     @GetMapping(value = "/compartilha/{idUsuarioEnvia}/{arquivo}/{idUsuarioRecebe}")
     @ApiOperation(value="compartilha arquivos")
-    @ApiResponses(value= {
-            @ApiResponse(code=201, message="Buscou arquivos com sucesso"),
-            @ApiResponse(code=404, message = "Não encontrou arquivos"),
-            @ApiResponse(code=500, message="Erro interno")
-    })
     public void compartilhaArquivos(@PathVariable String idUsuarioEnvia,
                                              @PathVariable String arquivo,
                                              @PathVariable String idUsuarioRecebe

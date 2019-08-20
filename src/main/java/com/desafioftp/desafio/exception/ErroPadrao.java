@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ErroPadrao {
+class ErroPadrao {
     private Long timestamp;
     private Integer status;
     private String error;
