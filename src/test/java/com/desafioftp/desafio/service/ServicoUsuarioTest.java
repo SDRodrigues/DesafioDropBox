@@ -1,19 +1,28 @@
 package com.desafioftp.desafio.service;
 
+import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.repository.Repositorio;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 public class ServicoUsuarioTest {
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @MockBean
     private Repositorio repositorio;
@@ -29,7 +38,6 @@ public class ServicoUsuarioTest {
     @Before
     public void setUp() {
         servicoUsuario = new ServicoUsuario(repositorio);
-        usuario = new Usuario();
         usuarioDto = Mockito.mock(UsuarioDto.class);
         novoUsuario = Mockito.mock(Usuario.class);
 
@@ -50,27 +58,69 @@ public class ServicoUsuarioTest {
     }
 
     @Test
-    public void findById() {
+    public void BuscaTodosUsuarios() {
+        Mockito.when(repositorio.findAll()).thenReturn(Stream.of
+                (new Usuario("762", "rodrigues", 22, "shooter"),
+                 new Usuario("407", "rodrigues", 30, "shooter"))
+                .collect(Collectors.toList()));
+            assertEquals(2, servicoUsuario.lerUsuario().size());
+    }
+
+    @Test
+    public void findById() throws ObjetoNaoEncontrado {
+        exception.expect(ObjetoNaoEncontrado.class);
+        exception.expectMessage("Usuario não encontrado");
         Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
         servicoUsuario.findById(ID);
     }
 
     @Test
-    public void deletaUsuarioId() {
+    public void criandoUsuario() {
+        Mockito.when(repositorio.insert(usuario)).thenReturn(usuario);
+        assertEquals(usuario, servicoUsuario.criarUsuario(usuario));
+    }
+
+    @Test(expected = ObjetoNaoEncontrado.class)
+    public void naoAchouId() {
+        servicoUsuario.findById(ID);
+    }
+
+    @Test
+    public void deletaUsuarioId() throws ObjetoNaoEncontrado {
+        exception.expect(ObjetoNaoEncontrado.class);
+        exception.expectMessage("Usuario não encontrado");
         Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
         servicoUsuario.findById(ID);
         servicoUsuario.deletaUsuarioId(ID);
         Mockito.verify(repositorio).deleteById(ID);
+       assertEquals(ID, "762");
+    }
+
+    @Test(expected = ObjetoNaoEncontrado.class)
+    public void excluindoUsuario() throws ObjetoNaoEncontrado {
+        servicoUsuario.deletaUsuarioId(ID);
+        Mockito.verify(repositorio, Mockito.times(1)).deleteById(ID);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void editaUsuario() throws NullPointerException {
+        Mockito.when(repositorio.findById(usuario.getId())).thenReturn(Optional.ofNullable(usuario));
+        servicoUsuario.editaUsuario(novoUsuario);
+        assertNotNull(novoUsuario);
     }
 
     @Test
-    public void editaUsuario() {
-        Mockito.when(repositorio.findById(usuario.getId())).thenReturn(Optional.ofNullable(usuario));
+    public void editandoUsuario() {
+        exception.expect(ObjetoNaoEncontrado.class);
+        exception.expectMessage("Usuario não encontrado");
         servicoUsuario.editaUsuario(novoUsuario);
+        Mockito.when(repositorio.findById(usuario.getId())).thenReturn(Optional.ofNullable(usuario));
     }
 
     @Test
     public void dtoParaUsuario() {
         servicoUsuario.dtoParaUsuario(usuarioDto);
+        assertNotNull(usuarioDto);
     }
+
 }

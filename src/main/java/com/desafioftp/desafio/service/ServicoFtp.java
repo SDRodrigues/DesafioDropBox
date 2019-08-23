@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Slf4j
@@ -26,7 +27,7 @@ public class ServicoFtp {
         private static final Integer PORTA = 21;
         private static final String USUARIO = "rodrigues";
         private static final String SENHA = "rodrigues";
-        ServicoUsuario servicoUsuario;
+        private ServicoUsuario servicoUsuario;
         private static final String NOTFOUND = "Usuario não encontrado";
 
 
@@ -74,8 +75,7 @@ public class ServicoFtp {
             for(FTPFile files:listaDiretorios){
                 if(files.getName().equals(id)){
                     direorioExiste=true;
-                }
-            }
+                } }
             if(!direorioExiste) {
                 if (ftpClient.makeDirectory(id)) {
                     log.info("Diretorio criado");
@@ -159,7 +159,7 @@ public class ServicoFtp {
         if (usuarioEnvia.isPresent() && usuarioRecebe.isPresent()) {
             ftpClient = new FTPClient();
             downloadArquivo(arquivo, idUsuario);
-            InputStream inputStream = IOUtils.toInputStream(arquivo);
+            InputStream inputStream = IOUtils.toInputStream(arquivo, StandardCharsets.UTF_8);
             ftpClient.enterLocalPassiveMode();
             try {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
