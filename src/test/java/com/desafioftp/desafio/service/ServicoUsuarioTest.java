@@ -42,11 +42,11 @@ public class ServicoUsuarioTest {
         novoUsuario = Mockito.mock(Usuario.class);
     }
 
+
     @Test
-    public void criarUsuario() {
-        servicoUsuario.criarUsuario(usuario);
-        Mockito.verify(repositorio).insert(usuario);
-        assertEquals(usuario, usuario);
+    public void criandoUsuario() {
+        Mockito.when(repositorio.insert(usuario)).thenReturn(usuario);
+        assertEquals(usuario, servicoUsuario.criarUsuario(usuario));
     }
 
     @Test
@@ -72,11 +72,7 @@ public class ServicoUsuarioTest {
         servicoUsuario.findById(ID);
     }
 
-    @Test
-    public void criandoUsuario() {
-        Mockito.when(repositorio.insert(usuario)).thenReturn(usuario);
-        assertEquals(usuario, servicoUsuario.criarUsuario(usuario));
-    }
+
 
     @Test(expected = ObjetoNaoEncontrado.class)
     public void excluindoUsuario() throws ObjetoNaoEncontrado {
