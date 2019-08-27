@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockftpserver.core.command.CommandNames;
-import org.mockftpserver.core.command.ConnectCommandHandler;
 import org.mockftpserver.fake.FakeFtpServer;
 import org.mockftpserver.fake.command.DeleCommandHandler;
 import org.mockftpserver.fake.command.ListCommandHandler;
@@ -14,7 +13,6 @@ import org.mockftpserver.fake.command.RetrCommandHandler;
 import org.mockftpserver.fake.command.StorCommandHandler;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 

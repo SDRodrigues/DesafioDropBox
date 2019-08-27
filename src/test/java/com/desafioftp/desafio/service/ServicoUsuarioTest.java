@@ -40,8 +40,6 @@ public class ServicoUsuarioTest {
         servicoUsuario = new ServicoUsuario(repositorio);
         usuarioDto = Mockito.mock(UsuarioDto.class);
         novoUsuario = Mockito.mock(Usuario.class);
-
-
     }
 
     @Test
@@ -81,33 +79,11 @@ public class ServicoUsuarioTest {
     }
 
     @Test(expected = ObjetoNaoEncontrado.class)
-    public void naoAchouId() {
-        servicoUsuario.findById(ID);
-    }
-
-    @Test
-    public void deletaUsuarioId() throws ObjetoNaoEncontrado {
-        exception.expect(ObjetoNaoEncontrado.class);
-        exception.expectMessage("Usuario não encontrado");
-        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
-        servicoUsuario.findById(ID);
-        servicoUsuario.deletaUsuarioId(ID);
-        Mockito.verify(repositorio).deleteById(ID);
-       assertEquals(ID, "762");
-    }
-
-    @Test(expected = ObjetoNaoEncontrado.class)
     public void excluindoUsuario() throws ObjetoNaoEncontrado {
         servicoUsuario.deletaUsuarioId(ID);
         Mockito.verify(repositorio, Mockito.times(1)).deleteById(ID);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void editaUsuario() throws NullPointerException {
-        Mockito.when(repositorio.findById(usuario.getId())).thenReturn(Optional.ofNullable(usuario));
-        servicoUsuario.editaUsuario(novoUsuario);
-        assertNotNull(novoUsuario);
-    }
 
     @Test
     public void editandoUsuario() {
