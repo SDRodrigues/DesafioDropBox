@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -154,7 +155,7 @@ public class ServicoFtp {
     public void arquivosCompartilhados(String idUsuario, String idOutroUsuario, String arquivo) {
         Optional<Usuario> usuarioEnvia = servicoUsuario.findById(idUsuario);
         Optional<Usuario> usuarioRecebe = servicoUsuario.findById(idOutroUsuario);
-        if (    (usuarioEnvia.isPresent() && usuarioRecebe.isPresent()  ) && (!idUsuario.equals(idOutroUsuario)   )   ) {
+        if (usuarioEnvia.isPresent() && usuarioRecebe.isPresent() ) {
             ftpClient = new FTPClient();
             downloadArquivo(arquivo, idUsuario);
             InputStream inputStream = IOUtils.toInputStream(arquivo, StandardCharsets.UTF_8);
