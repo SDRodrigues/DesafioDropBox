@@ -4,12 +4,14 @@ import com.desafioftp.desafio.exception.ObjetoNaoEncontrado;
 import com.desafioftp.desafio.model.Usuario;
 import com.desafioftp.desafio.model.UsuarioDto;
 import com.desafioftp.desafio.repository.Repositorio;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
@@ -37,6 +39,7 @@ public class ServicoUsuarioTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         servicoUsuario = new ServicoUsuario(repositorio);
         usuarioDto = Mockito.mock(UsuarioDto.class);
         novoUsuario = Mockito.mock(Usuario.class);
@@ -77,7 +80,12 @@ public class ServicoUsuarioTest {
     @Test(expected = ObjetoNaoEncontrado.class)
     public void excluindoUsuario() throws ObjetoNaoEncontrado {
         servicoUsuario.deletaUsuarioId(ID);
+        exception.expect(ObjetoNaoEncontrado.class);
+        exception.expectMessage("Usuario não encontrado");
+        Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
+        Mockito.doNothing().when(servicoUsuario.findById(ID));
         Mockito.verify(repositorio, Mockito.times(1)).deleteById(ID);
+        Assert.assertNotNull(usuario.getId());
     }
 
 

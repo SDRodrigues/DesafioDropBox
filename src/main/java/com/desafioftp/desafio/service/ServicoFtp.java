@@ -137,7 +137,6 @@ public class ServicoFtp {
         Optional<Usuario> usuario = servicoUsuario.findById(id);
         if (usuario.isPresent()) {
             String recebeId = usuario.get().getId();
-            ftpClient = new FTPClient();
             ftpClient = conecta();
             ftpClient.enterLocalPassiveMode();
             ftpClient = verificaDiretorio(recebeId, ftpClient);
@@ -156,7 +155,7 @@ public class ServicoFtp {
     public void arquivosCompartilhados(String idUsuario, String idOutroUsuario, String arquivo) {
         Optional<Usuario> usuarioEnvia = servicoUsuario.findById(idUsuario);
         Optional<Usuario> usuarioRecebe = servicoUsuario.findById(idOutroUsuario);
-        if (usuarioEnvia.isPresent() && usuarioRecebe.isPresent()) {
+        if (    (usuarioEnvia.isPresent() && usuarioRecebe.isPresent()  ) && (!idUsuario.equals(idOutroUsuario)   )   ) {
             ftpClient = new FTPClient();
             downloadArquivo(arquivo, idUsuario);
             InputStream inputStream = IOUtils.toInputStream(arquivo, StandardCharsets.UTF_8);
@@ -177,7 +176,6 @@ public class ServicoFtp {
     }
 
     public void excluirArquivos(Optional<Usuario> usuario, String nomeArquivo) {
-        ftpClient = new FTPClient();
         ftpClient = conecta();
         if (usuario.isPresent()) {
             String recebeId = usuario.get().getId();
