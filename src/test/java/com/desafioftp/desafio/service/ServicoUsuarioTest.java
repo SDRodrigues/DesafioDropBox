@@ -77,15 +77,14 @@ public class ServicoUsuarioTest {
 
 
 
-    @Test(expected = ObjetoNaoEncontrado.class)
+    @Test
     public void excluindoUsuario() throws ObjetoNaoEncontrado {
-        servicoUsuario.deletaUsuarioId(ID);
         exception.expect(ObjetoNaoEncontrado.class);
         exception.expectMessage("Usuario não encontrado");
         Mockito.when(repositorio.findById(ID)).thenReturn(Optional.ofNullable(usuario));
-        Mockito.doNothing().when(servicoUsuario.findById(ID));
-        Mockito.verify(repositorio, Mockito.times(1)).deleteById(ID);
-        Assert.assertNotNull(usuario.getId());
+        Mockito.doNothing().when(repositorio).deleteById(ID);
+        servicoUsuario.deletaUsuarioId(ID);
+        Assert.assertNotNull(ID);
     }
 
 
@@ -95,6 +94,7 @@ public class ServicoUsuarioTest {
         exception.expectMessage("Usuario não encontrado");
         servicoUsuario.editaUsuario(novoUsuario);
         Mockito.when(repositorio.findById(usuario.getId())).thenReturn(Optional.ofNullable(usuario));
+        Assert.assertNotNull(usuario);
     }
 
     @Test

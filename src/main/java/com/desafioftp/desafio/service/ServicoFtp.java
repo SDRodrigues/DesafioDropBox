@@ -35,7 +35,7 @@ public class ServicoFtp {
         this.servicoUsuario = servicoUsuario;
     }
 
-    private FTPClient conecta() {
+    protected FTPClient conecta() {
         ftpClient = new FTPClient();
         try {
             ftpClient.connect(HOST, PORTA);
@@ -47,7 +47,7 @@ public class ServicoFtp {
         return this.ftpClient;
     }
 
-    private void disconecta() {
+    protected void disconecta() {
         try {
             ftpClient.logout();
             ftpClient.disconnect();
@@ -56,7 +56,7 @@ public class ServicoFtp {
         }
     }
 
-    private FTPClient criarDiretorio(String id) {
+    protected FTPClient criarDiretorio(String id) {
         try {
             if (!Arrays.asList(ftpClient.listDirectories()).contains(id)) {
                 ftpClient.makeDirectory(id);
@@ -67,7 +67,7 @@ public class ServicoFtp {
         return ftpClient;
     }
 
-    private FTPClient verificaDiretorio(String id, FTPClient ftpClient) {
+    protected FTPClient verificaDiretorio(String id, FTPClient ftpClient) {
         boolean direorioExiste= false;
         try {
             FTPFile[] listaDiretorios = ftpClient.listDirectories();
@@ -87,7 +87,7 @@ public class ServicoFtp {
         return ftpClient;
     }
 
-    private Page<FTPFile> criouArquivosPaginados(FTPFile[] arquivos, Integer paginas, Integer filtro) {
+    protected Page<FTPFile> criouArquivosPaginados(FTPFile[] arquivos, Integer paginas, Integer filtro) {
         PageRequest pageRequest = new PageRequest(paginas,filtro);
         List<FTPFile> lista = new ArrayList<>(Arrays.asList(arquivos));
         int max = Math.min(filtro * (paginas + 1), lista.size());
@@ -96,7 +96,7 @@ public class ServicoFtp {
         return  arquivoPaginado;
     }
 
-    private void downloadArquivo(String arquivo, String id) {
+    protected void downloadArquivo(String arquivo, String id) {
         criarDiretorio(id);
         ftpClient = conecta();
         try {

@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -46,6 +47,7 @@ public class ServicoFtpTest {
 
     private InputStream inputStream;
     private MockMultipartFile multipartFile;
+    private OutputStream outputStream;
 
 
     private Usuario usuario;
@@ -80,6 +82,7 @@ public class ServicoFtpTest {
         servicoFtp = PowerMockito.spy(new ServicoFtp());
         servicoUsuario = Mockito.mock(ServicoUsuario.class);
         inputStream = Mockito.mock(InputStream.class);
+        outputStream = Mockito.mock(OutputStream.class);
         ftpClient = Mockito.mock(FTPClient.class);
         ftpClient.connect(HOST, PORTA);
         ftpClient.login(USUARIO, SENHA);
@@ -99,18 +102,10 @@ public class ServicoFtpTest {
     }
 
     @Test(expected = ObjetoNaoEncontrado.class)
-    public void salvaArquivo() throws IOException, ObjetoNaoEncontrado, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void salvaArquivo() throws ObjetoNaoEncontrado {
         servicoFtp = new ServicoFtp(servicoUsuario);
         Usuario usuario = (new Usuario("762", "rodrigues", 22, "shooter"));
         servicoFtp.salvaArquivo(usuario.getId(), multipartFile);
-        Method conecta = ServicoFtp.class.getDeclaredMethod("conecta");
-        conecta.setAccessible(true);
-        Method criaDir = ServicoFtp.class.getDeclaredMethod("criarDiretorio", String.class);
-        criaDir.setAccessible(true);
-        criaDir.invoke(ID);
-        ftpClient.changeWorkingDirectory("/");
-        ftpClient.setFileType(BINARIO);
-        ftpClient.storeFile(multipartFile.getOriginalFilename(), multipartFile.getInputStream());
         Assert.assertNotNull(usuario);
     }
 
@@ -118,29 +113,25 @@ public class ServicoFtpTest {
     public void listaArquivosPaginados() throws IOException, NoSuchMethodException {
         servicoFtp = new ServicoFtp(servicoUsuario);
         Usuario usuario = (new Usuario("762", "rodrigues", 22, "shooter"));
+        servicoFtp.listaArquivosPaginados(usuario.getId(), PAGINAS, QUANTIDADE);
         ftpClient.changeWorkingDirectory("/" + usuario.getId());
-        Method conecta = ServicoFtp.class.getDeclaredMethod("conecta");
-        conecta.setAccessible(true);
+        Mockito.doReturn(ftpClient).when(servicoFtp.conecta());
+        Mockito.doReturn(ftpClient).when(servicoFtp.verificaDiretorio(ID, ftpClient));
         Method verificaDiretorio = ServicoFtp.class.getDeclaredMethod("verificaDiretorio", String.class, FTPClient.class);
         verificaDiretorio.setAccessible(true);
+        exception.expect(IOException.class);
         Assert.assertNotNull(usuario);
 
     }
 
     @Test(expected = ObjetoNaoEncontrado.class)
-    public void arquivosCompartilhados() throws ObjetoNaoEncontrado, NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+    public void arquivosCompartilhados() throws ObjetoNaoEncontrado {
         servicoFtp = new ServicoFtp(servicoUsuario);
         Usuario usuario = (new Usuario("762", "rodrigues", 22, "shooter"));
         Usuario usuario2 = (new Usuario("407", "rodrigues", 22, "shooter"));
         servicoFtp.arquivosCompartilhados(ID, OUTROID, ARQUIVO);
-        Method download = ServicoFtp.class.getDeclaredMethod("downloadArquivo", String.class, String.class);
-        download.setAccessible(true);
-        Mockito.doReturn(true).when(ftpClient).setFileType(BINARIO);
-        Mockito.doReturn(true).when(ftpClient).changeToParentDirectory();
-        Mockito.doReturn(true).when(ftpClient).changeWorkingDirectory("/");
-        ftpClient.storeFile(multipartFile.getOriginalFilename(), multipartFile.getInputStream());
-        Method disconecta = ServicoFtp.class.getDeclaredMethod("disconecta");
-        disconecta.setAccessible(true);
+        Mockito.doNothing().when(servicoFtp).downloadArquivo(ARQUIVO, ID);
+        exception.expect(IOException.class);
         Assert.assertNotEquals(usuario, usuario2);
 
 
@@ -151,9 +142,9 @@ public class ServicoFtpTest {
         Optional<Usuario> usuario = Optional.of((new Usuario("762", "rodrigues", 22, "shooter")));
         servicoFtp.excluirArquivos(usuario, ARQUIVO);
         ftpClient.deleteFile("/" + usuario.get().getId() + "/" + ARQUIVO);
+        Mockito.doThrow(IOException.class).when(ftpClient).deleteFile("/" + usuario.get().getId() + "/" + ARQUIVO);
         Assert.assertNotNull(usuario);
     }
-
 
 
 
