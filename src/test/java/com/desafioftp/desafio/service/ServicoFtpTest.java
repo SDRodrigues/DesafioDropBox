@@ -15,12 +15,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Optional;
 
 
@@ -110,16 +107,11 @@ public class ServicoFtpTest {
     }
 
     @Test(expected = ObjetoNaoEncontrado.class)
-    public void listaArquivosPaginados() throws IOException, NoSuchMethodException {
+    public void listaArquivosPaginados() {
         servicoFtp = new ServicoFtp(servicoUsuario);
         Usuario usuario = (new Usuario("762", "rodrigues", 22, "shooter"));
         servicoFtp.listaArquivosPaginados(usuario.getId(), PAGINAS, QUANTIDADE);
-        ftpClient.changeWorkingDirectory("/" + usuario.getId());
-        Mockito.doReturn(ftpClient).when(servicoFtp.conecta());
-        Mockito.doReturn(ftpClient).when(servicoFtp.verificaDiretorio(ID, ftpClient));
-        Method verificaDiretorio = ServicoFtp.class.getDeclaredMethod("verificaDiretorio", String.class, FTPClient.class);
-        verificaDiretorio.setAccessible(true);
-        exception.expect(IOException.class);
+        Mockito.when(false).thenThrow(new ObjetoNaoEncontrado(NOTFOUND));
         Assert.assertNotNull(usuario);
 
     }
@@ -130,7 +122,6 @@ public class ServicoFtpTest {
         Usuario usuario = (new Usuario("762", "rodrigues", 22, "shooter"));
         Usuario usuario2 = (new Usuario("407", "rodrigues", 22, "shooter"));
         servicoFtp.arquivosCompartilhados(ID, OUTROID, ARQUIVO);
-        Mockito.doNothing().when(servicoFtp).downloadArquivo(ARQUIVO, ID);
         exception.expect(IOException.class);
         Assert.assertNotEquals(usuario, usuario2);
 
@@ -145,6 +136,9 @@ public class ServicoFtpTest {
         Mockito.doThrow(IOException.class).when(ftpClient).deleteFile("/" + usuario.get().getId() + "/" + ARQUIVO);
         Assert.assertNotNull(usuario);
     }
+
+
+
 
 
 

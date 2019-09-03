@@ -38,7 +38,6 @@ public class ServicoUsuario {
         return usuario;
     }
 
-
     public void deletaUsuarioId(String id) {
         this.findById(id);
         this.repositorio.deleteById(id);
@@ -46,7 +45,7 @@ public class ServicoUsuario {
 
     public Usuario editaUsuario(Usuario usuario) {
         Usuario novoUsuario = atualizandoUsuario(usuario.getId());
-        atualizaUsuario(Optional.of(novoUsuario), usuario);
+        atualizaUsuario(novoUsuario, usuario);
         return this.repositorio.save(novoUsuario);
     }
 
@@ -59,16 +58,11 @@ public class ServicoUsuario {
         }
     }
 
-    private void atualizaUsuario(Optional<Usuario> novoUsuario, Usuario usuario) {
-        if (novoUsuario.isPresent()) {
-            novoUsuario.get().setId(usuario.getId());
-            novoUsuario.get().setNome(usuario.getNome());
-            novoUsuario.get().setIdade(usuario.getIdade());
-            novoUsuario.get().setProfissao(usuario.getProfissao());
-        }
-        else {
-            throw new ObjetoNaoEncontrado(NOTFOUND);
-        }
+    private void atualizaUsuario(Usuario novoUsuario, Usuario usuario) {
+        novoUsuario.setId(usuario.getId());
+        novoUsuario.setNome(usuario.getNome());
+        novoUsuario.setIdade(usuario.getIdade());
+        novoUsuario.setProfissao(usuario.getProfissao());
     }
 
     public Usuario dtoParaUsuario(UsuarioDto usuarioDto) {
@@ -79,6 +73,4 @@ public class ServicoUsuario {
                 usuarioDto.getProfissao()
         );
     }
-
-
 }
